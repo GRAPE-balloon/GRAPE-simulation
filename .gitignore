@@ -9,7 +9,7 @@
 *.pdf
 *.txt
 .DS_Store
-
+data/
 
 # VSCode
 .vscode/*

@@ -1,0 +1,70 @@
+######################################################
+## redirect output from each thread
+######################################################
+/control/cout/setCoutFile leap.out
+/control/cout/setCerrFile leap.err
+
+######################################################
+## Verbosity
+######################################################
+/control/verbose 0
+/process/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/run/printProgress 100
+
+######################################################
+## Change the default number of threads (in multi-threaded mode)
+######################################################
+/run/numberOfThreads 10
+
+######################################################
+## Overlap Checking
+######################################################
+/user/det/setOverlapChecking false
+
+######################################################
+## Physics
+# Option0 - Electromagnetic
+# Option1 - Electromagnetic & Hadronic
+# Option2 - Electromagnetic & Hadronic with high precision option
+######################################################
+#/user/phy/setPhysics Option0
+/user/phy/setPhysics Option1
+#/user/phy/setPhysics Option2
+
+######################################################
+## Initialize kernel
+######################################################
+/run/initialize
+
+######################################################
+## Source Particle
+######################################################
+/gps/particle ion
+/gps/ion 11 22
+
+######################################################
+## Source Geometry
+######################################################
+/gps/pos/type Point
+/gps/pos/centre 0. 0. 72.7 mm
+/gps/energy 0. MeV
+
+######################################################
+## Change file name
+######################################################
+/analysis/setFileName ../data/Na22_center.root
+
+######################################################
+## Random number
+######################################################
+/random/setSeeds 101 101
+
+######################################################
+## Start run
+######################################################
+/run/printProgress 100000
+/run/beamOn        1000000
+#/run/beamOn        5
