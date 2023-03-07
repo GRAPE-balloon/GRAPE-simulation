@@ -93,13 +93,13 @@ endforeach()
 #   PlotData.py
 #   )
 
-# foreach(_file ${GRAPE_DATA})
-#   configure_file(
-#     ${PROJECT_SOURCE_DIR}/data/${_file}
-#     ${PROJECT_BINARY_DIR}/data/${_file}
-#     COPYONLY
-#     )
-# endforeach()
+foreach(_file ${GRAPE_DATA})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/data/${_file}
+    ${PROJECT_BINARY_DIR}/data/${_file}
+    COPYONLY
+    )
+endforeach()
 
 
 #----------------------------------------------------------------------------
