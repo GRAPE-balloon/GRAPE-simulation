@@ -3,6 +3,7 @@
 //
 //  Gamma-RAy Polarimeter Experiment (GRAPE)
 //  August 2023 Balloon Flight Campaign
+//  Payload with 3 Compartments & Tagged Source
 //  (V1) Created: Mar 2, 2022 by Camden Ertley
 //  (V2) Created: September 23, 2022 by Camden Ertley
 //  (V3) Modified: Dec 26, 2022 by Karla Onate Melecio
@@ -355,47 +356,368 @@ namespace grape
     // Instrument
     //------------------------------------------------------
 
-    
     //----------------------------------
-    // Module
+    // Payload Module
     //----------------------------------
     // SOLID VOLUME
-    auto mod_X = kModule_Xsize;
-    auto mod_Y = kModule_Ysize;
-    auto mod_Z = kModule_Zsize;
+    auto pyld_mod_X = kPayload_Module_Xsize;
+    auto pyld_mod_Y = kPayload_Module_Ysize;
+    auto pyld_mod_Z = kPayload_Module_Zsize;
 
-    auto module_S = new G4Box(
-                  "Module_S",           // its name
-                  mod_X/2,              // its X dimension 
-                  mod_Y/2,              // its Y dimension
-                  mod_Z/2);             // its Z dimension
+    auto pyld_module_S = new G4Box(
+                  "Payload_Module_S",           // its name
+                  pyld_mod_X/2,              // its X dimension 
+                  pyld_mod_Y/2,              // its Y dimension
+                  pyld_mod_Z/2);             // its Z dimension
 
     // LOGICAL VOLUME
-    auto module_LV = new G4LogicalVolume(
-                  module_S,             // its solid
+    auto pyld_module_LV = new G4LogicalVolume(
+                  pyld_module_S,             // its solid
                   mVacuum,              // its material
-                  "Module_LV");         // its name
+                  "Payload_Module_LV");         // its name
 
     // PHYSICAL VOLUME
-    // auto mod_Xpos = 0.0*mm;
-    auto mod_Xpos = 0.0*mm;
-    auto mod_Ypos = (kENCL_Side1_Zsize/2 - kScint_Zsize/2)*std::sin( fZenithAngle );
-    auto mod_Zpos = mod_Z/2*std::cos( fZenithAngle ) + mod_X/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
-    auto mod_Pos = G4ThreeVector( mod_Xpos, mod_Ypos, mod_Zpos );
-    auto mod_RotMat = new G4RotationMatrix();
-    mod_RotMat -> setTheta( fZenithAngle );
-    mod_RotMat -> setPsi( fAzimuthAngle );
+    // auto pyld_mod_Xpos = 0.0*mm;
+    auto pyld_mod_Xpos = 0.0*mm;
+    auto pyld_mod_Ypos = (kENCL_Side1_Zsize/2 - kScint_Zsize/2)*std::sin( fZenithAngle );
+    auto pyld_mod_Zpos = pyld_mod_Z/2*std::cos( fZenithAngle ) + pyld_mod_X/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
+    auto pyld_mod_Pos = G4ThreeVector( pyld_mod_Xpos, pyld_mod_Ypos, pyld_mod_Zpos );
+    auto pyld_mod_RotMat = new G4RotationMatrix();
+    pyld_mod_RotMat -> setTheta( fZenithAngle );
+    pyld_mod_RotMat -> setPsi( fAzimuthAngle );
 
     fPhysicalModule = new G4PVPlacement(
-                  mod_RotMat,           // its rotation
-                  mod_Pos,              // its position
-                  module_LV,            // its logical volume
-                  "Module_PV",          // its name
+                  pyld_mod_RotMat,           // its rotation
+                  pyld_mod_Pos,              // its position
+                  pyld_module_LV,            // its logical volume
+                  "Payload_Module_PV",          // its name
                   world_LV,             // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
+
     
+    //----------------------------------
+    // Detector Module
+    //----------------------------------
+    // SOLID VOLUME
+    auto det_mod_X = kDet_Module_Xsize;
+    auto det_mod_Y = kDet_Module_Ysize;
+    auto det_mod_Z = kDet_Module_Zsize;
+
+    auto det_module_S = new G4Box(
+                  "Det_Module_S",           // its name
+                  det_mod_X/2,              // its X dimension 
+                  det_mod_Y/2,              // its Y dimension
+                  det_mod_Z/2);             // its Z dimension
+
+    // LOGICAL VOLUME
+    auto det_module_LV = new G4LogicalVolume(
+                  det_module_S,             // its solid
+                  mVacuum,              // its material
+                  "Det_Module_LV");         // its name
+
+    // PHYSICAL VOLUME
+    // auto det_mod_Xpos = 0.0*mm;
+    auto det_mod_Xpos = 0.0*mm;
+    auto det_mod_Ypos = 0.0*mm;
+    auto det_mod_Zpos = kPayload_Module_Zsize/2 - kDet_Module_Zsize/2;
+    auto det_mod_Pos = G4ThreeVector( det_mod_Xpos, det_mod_Ypos, det_mod_Zpos );
+    auto det_mod_RotMat = new G4RotationMatrix();
+    det_mod_RotMat -> setTheta( fZenithAngle );
+    det_mod_RotMat -> setPsi( fAzimuthAngle );
+
+    new G4PVPlacement(
+                  det_mod_RotMat,           // its rotation
+                  det_mod_Pos,              // its position
+                  det_module_LV,            // its logical volume
+                  "Det_Module_PV",          // its name
+                  pyld_module_LV,             // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // DAQ Module
+    //----------------------------------
+    // SOLID VOLUME
+    auto daq_mod_X = kDAQ_Module_Xsize;
+    auto daq_mod_Y = kDAQ_Module_Ysize;
+    auto daq_mod_Z = kDAQ_Module_Zsize;
+
+    auto daq_module_S = new G4Box(
+                  "DAQ_Module_S",           // its name
+                  daq_mod_X/2,              // its X dimension 
+                  daq_mod_Y/2,              // its Y dimension
+                  daq_mod_Z/2);             // its Z dimension
+
+    // LOGICAL VOLUME
+    auto daq_module_LV = new G4LogicalVolume(
+                  daq_module_S,             // its solid
+                  mVacuum,              // its material
+                  "DAQ_Module_LV");         // its name
+
+    // PHYSICAL VOLUME
+    // auto daq_mod_Xpos = 0.0*mm;
+    auto daq_mod_Xpos = 0.0*mm;
+    auto daq_mod_Ypos = 0.0*mm;
+    auto daq_mod_Zpos = det_mod_Zpos - kDet_Module_Zsize/2 - kDAQ_Module_Zsize/2;
+    auto daq_mod_Pos = G4ThreeVector( daq_mod_Xpos, daq_mod_Ypos, daq_mod_Zpos );
+    auto daq_mod_RotMat = new G4RotationMatrix();
+    daq_mod_RotMat -> setTheta( fZenithAngle );
+    daq_mod_RotMat -> setPsi( fAzimuthAngle );
+
+    new G4PVPlacement(
+                  daq_mod_RotMat,           // its rotation
+                  daq_mod_Pos,              // its position
+                  daq_module_LV,            // its logical volume
+                  "DAQ_Module_PV",          // its name
+                  pyld_module_LV,             // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Power Module
+    //----------------------------------
+    // SOLID VOLUME
+    auto pwr_mod_X = kPower_Module_Xsize;
+    auto pwr_mod_Y = kPower_Module_Ysize;
+    auto pwr_mod_Z = kPower_Module_Zsize;
+
+    auto pwr_module_S = new G4Box(
+                  "Power_Module_S",           // its name
+                  pwr_mod_X/2,              // its X dimension 
+                  pwr_mod_Y/2,              // its Y dimension
+                  pwr_mod_Z/2);             // its Z dimension
+
+    // LOGICAL VOLUME
+    auto pwr_module_LV = new G4LogicalVolume(
+                  pwr_module_S,             // its solid
+                  mVacuum,              // its material
+                  "Power_Module_LV");         // its name
+
+    // PHYSICAL VOLUME
+    // auto pwr_mod_Xpos = 0.0*mm;
+    auto pwr_mod_Xpos = 0.0*mm;
+    auto pwr_mod_Ypos = 0.0*mm;
+    auto pwr_mod_Zpos = daq_mod_Zpos - kDAQ_Module_Zsize/2 - kPower_Module_Zsize/2;
+    auto pwr_mod_Pos = G4ThreeVector( pwr_mod_Xpos, pwr_mod_Ypos, pwr_mod_Zpos );
+    auto pwr_mod_RotMat = new G4RotationMatrix();
+    pwr_mod_RotMat -> setTheta( fZenithAngle );
+    pwr_mod_RotMat -> setPsi( fAzimuthAngle );
+
+    new G4PVPlacement(
+                  pwr_mod_RotMat,           // its rotation
+                  pwr_mod_Pos,              // its position
+                  pwr_module_LV,            // its logical volume
+                  "Power_Module_PV",          // its name
+                  pyld_module_LV,             // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Power / Computer Module
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    //----------------------------------
+      // Enclosure 3: Power Supply/Computer Container
+      //----------------------------------
+      // SOLID VOLUME
+      auto Power_ENCL_X = kPower_ENCL_Xsize;
+      auto Power_ENCL_Y = kPower_ENCL_Ysize;
+      auto Power_ENCL_Z = kPower_ENCL_Zsize;
+  
+      G4VSolid* Power_ENCL_S = new G4Box(
+                    "Power_ENCL_S",         // its name
+                    Power_ENCL_X/2,         // its X dimension
+                    Power_ENCL_Y/2,         // its Y dimension
+                    Power_ENCL_Z/2);        // its Z dimension
+  
+      // Hole
+      auto Power_ENCL_Hole_X = kPower_ENCL_Hole_Xsize;
+      auto Power_ENCL_Hole_Y = kPower_ENCL_Hole_Ysize;
+      auto Power_ENCL_Hole_Z = kPower_ENCL_Hole_Zsize;
+  
+      auto Power_ENCL_Hole_S = new G4Box(
+                    "Power_ENCL_S",         // its name
+                    Power_ENCL_Hole_X/2,         // its X dimension
+                    Power_ENCL_Hole_Y/2,         // its Y dimension
+                    Power_ENCL_Hole_Z/2);        // its Z dimension
+  
+      auto Power_ENCL_Hole_Xpos = 0.0*mm;
+      auto Power_ENCL_Hole_Ypos = 0.0*mm;
+      auto Power_ENCL_Hole_Zpos = Power_ENCL_Hole_Z/2 - Power_ENCL_Z/2  + kPower_ENCL_Thickness;
+      auto Power_ENCL_Hole_pos = G4ThreeVector( Power_ENCL_Hole_Xpos, Power_ENCL_Hole_Ypos, Power_ENCL_Hole_Zpos );
+      Power_ENCL_S = new G4SubtractionSolid( 
+                    "Power_ENCL_S",         // its name
+                    Power_ENCL_S,           // starting solid
+                    Power_ENCL_Hole_S,      // solid to be subtracted
+                    0,                    // its rotation
+                    Power_ENCL_Hole_pos );  // its position
+  
+  
+      // LOGICAL VOLUME
+      auto Power_ENCL_LV = new G4LogicalVolume(
+                    Power_ENCL_S,           // its solid
+                    mAl6061,                 // its material
+                    "Power_ENCL_LV");       // its name
+  
+      // PHYSICAL VOLUME
+      auto Power_ENCL_Xpos = 0.0*mm;
+      auto Power_ENCL_Ypos = 0.0*mm;
+      auto Power_ENCL_Zpos = 0.0*mm;
+      auto Power_ENCL_Pos = G4ThreeVector( Power_ENCL_Xpos, Power_ENCL_Ypos, Power_ENCL_Zpos );
+  
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    Power_ENCL_Pos,         // its position
+                    Power_ENCL_LV,          // its logical volume
+                    "Power_ENCL_PV",        // its name
+                    pwr_module_LV,        // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // DAQ Module
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      //----------------------------------
+      // Enclosure 2: DAQ Container
+      //----------------------------------
+      // SOLID VOLUME
+      auto DAQ_ENCL_X = kDAQ_ENCL_Xsize;
+      auto DAQ_ENCL_Y = kDAQ_ENCL_Ysize;
+      auto DAQ_ENCL_Z = kDAQ_ENCL_Zsize;
+  
+      G4VSolid* DAQ_ENCL_S = new G4Box(
+                    "DAQ_ENCL_S",         // its name
+                    DAQ_ENCL_X/2,         // its X dimension
+                    DAQ_ENCL_Y/2,         // its Y dimension
+                    DAQ_ENCL_Z/2);        // its Z dimension
+  
+      // Hole
+      auto DAQ_ENCL_Hole_X = kDAQ_ENCL_Hole_Xsize;
+      auto DAQ_ENCL_Hole_Y = kDAQ_ENCL_Hole_Ysize;
+      auto DAQ_ENCL_Hole_Z = kDAQ_ENCL_Hole_Zsize;
+  
+      auto DAQ_ENCL_Hole_S = new G4Box(
+                    "DAQ_ENCL_S",         // its name
+                    DAQ_ENCL_Hole_X/2,         // its X dimension
+                    DAQ_ENCL_Hole_Y/2,         // its Y dimension
+                    DAQ_ENCL_Hole_Z/2);        // its Z dimension
+  
+      auto DAQ_ENCL_Hole_Xpos = 0.0*mm;
+      auto DAQ_ENCL_Hole_Ypos = 0.0*mm;
+      auto DAQ_ENCL_Hole_Zpos = DAQ_ENCL_Hole_Z/2 - DAQ_ENCL_Z/2  + kDAQ_ENCL_BOT_Thickness;
+      auto DAQ_ENCL_Hole_pos = G4ThreeVector( DAQ_ENCL_Hole_Xpos, DAQ_ENCL_Hole_Ypos, DAQ_ENCL_Hole_Zpos );
+      DAQ_ENCL_S = new G4SubtractionSolid( 
+                    "DAQ_ENCL_S",         // its name
+                    DAQ_ENCL_S,           // starting solid
+                    DAQ_ENCL_Hole_S,      // solid to be subtracted
+                    0,                    // its rotation
+                    DAQ_ENCL_Hole_pos );  // its position
+  
+  
+      // LOGICAL VOLUME
+      auto DAQ_ENCL_LV = new G4LogicalVolume(
+                    DAQ_ENCL_S,           // its solid
+                    mAl6061,                 // its material
+                    "DAQ_ENCL_LV");       // its name
+  
+      // PHYSICAL VOLUME
+      auto DAQ_ENCL_Xpos = 0.0*mm;
+      auto DAQ_ENCL_Ypos = 0.0*mm;
+      auto DAQ_ENCL_Zpos = 0.0*mm;
+      auto DAQ_ENCL_Pos = G4ThreeVector( DAQ_ENCL_Xpos, DAQ_ENCL_Ypos, DAQ_ENCL_Zpos );
+  
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    DAQ_ENCL_Pos,         // its position
+                    DAQ_ENCL_LV,          // its logical volume
+                    "DAQ_ENCL_PV",        // its name
+                    daq_module_LV,        // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Module Interface Board (MIB)
+    //----------------------------------
+    
+    // Solid Volume
+    auto MIB_X = kMIB_Xsize;
+    auto MIB_Y = kMIB_Ysize;
+    auto MIB_Z = kMIB_Zsize;
+
+    auto MIB_S = new G4Box(
+                  "MIB_S",              // its name
+                  MIB_X/2,              // its X dimension 
+                  MIB_Y/2,              // its Y dimension
+                  MIB_Z/2);             // its Z dimension
+    
+    // Logical Volume     
+    auto MIB_LV = new G4LogicalVolume(
+                  MIB_S,                // its solid
+                  mPCB,                  // its material
+                  "MIB_LV");            // its name
+
+    auto MIB_Xpos = 0.0*mm;
+    auto MIB_Ypos = 0.0*mm;
+    auto MIB_Zpos = kDAQ_Module_Zsize/2 - kMIB_Zoffset - MIB_Z/2; 
+    // APB_Con_Zpos + APB_Con_Z/2 + kAPB_MIB_Zoffset + MIB_Z/2;
+    auto MIB_Pos = G4ThreeVector( MIB_Xpos, MIB_Ypos, MIB_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  MIB_Pos,              // its position
+                  MIB_LV,               // its logical volume
+                  "MIB_PV",             // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Base Plate
+    //----------------------------------
+    // Solid Volume
+    auto ENCL_Bot_X = kENCL_Bot_Xsize;
+    auto ENCL_Bot_Y = kENCL_Bot_Ysize;
+    auto ENCL_Bot_Z = kENCL_Bot_Zsize;
+
+    auto ENCL_Bot_S = new G4Box(
+                  "ENCL_Bot_S",         // its name
+                  ENCL_Bot_X/2,         // its X dimension 
+                  ENCL_Bot_Y/2,         // its Y dimension
+                  ENCL_Bot_Z/2);        // its Z dimension
+    
+    // Logical Volume
+    auto ENCL_Bot_LV = new G4LogicalVolume(
+                  ENCL_Bot_S,           // its solid
+                  mAl6061,              // its material
+                  "ENCL_Bot_LV");       // its name
+
+    // Pysical Volume
+    auto ENCL_Bot_Xpos = 0.0*mm;
+    auto ENCL_Bot_Ypos = 0.0*mm;
+    auto ENCL_Bot_Zpos = -kDAQ_Module_Zsize/2 + kINNER_SHLD_Zoffset + kENCL_Bot_Zsize/2;
+    auto ENCL_Bot_Pos = G4ThreeVector( ENCL_Bot_Xpos, ENCL_Bot_Ypos, ENCL_Bot_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_Bot_Pos,         // its position
+                  ENCL_Bot_LV,          // its logical volume
+                  "ENCL_Bot_PV",        // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
 
     //----------------------------------
     // Base Shield - Lead 
@@ -420,7 +742,7 @@ namespace grape
     // Pysical Volume
     auto SHPB_Bot_Xpos = 0.0*mm;
     auto SHPB_Bot_Ypos = 0.0*mm;
-    auto SHPB_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z/2;
+    auto SHPB_Bot_Zpos = ENCL_Bot_Zpos + kENCL_Bot_Zsize/2 + kSHPB_Bot_Zsize/2; //155.6*mm
     auto SHPB_Bot_Pos = G4ThreeVector( SHPB_Bot_Xpos, SHPB_Bot_Ypos, SHPB_Bot_Zpos );
 
     new G4PVPlacement(
@@ -428,7 +750,7 @@ namespace grape
                   SHPB_Bot_Pos,         // its position
                   SHPB_Bot_LV,          // its logical volume
                   "SHPB_Bot_PV",        // its name
-                  module_LV,            // its mother  volume
+                  daq_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -456,7 +778,7 @@ namespace grape
     // Pysical Volume
     auto SHSN_Bot_Xpos = 0.0*mm;
     auto SHSN_Bot_Ypos = 0.0*mm;
-    auto SHSN_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z/2;
+    auto SHSN_Bot_Zpos = SHPB_Bot_Zpos + kSHPB_Bot_Zsize/2 + kSHSN_Bot_Zsize/2;
     auto SHSN_Bot_Pos = G4ThreeVector( SHSN_Bot_Xpos, SHSN_Bot_Ypos, SHSN_Bot_Zpos );
 
     new G4PVPlacement(
@@ -464,7 +786,7 @@ namespace grape
                   SHSN_Bot_Pos,         // its position
                   SHSN_Bot_LV,          // its logical volume
                   "SHSN_Bot_PV",        // its name
-                  module_LV,            // its mother  volume
+                  daq_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -492,7 +814,7 @@ namespace grape
     // Pysical Volume
     auto SHCU_Bot_Xpos = 0.0*mm;
     auto SHCU_Bot_Ypos = 0.0*mm;
-    auto SHCU_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z/2 + SHCU_Bot_Z/2;
+    auto SHCU_Bot_Zpos = SHSN_Bot_Zpos + kSHSN_Bot_Zsize/2 + kSHCU_Bot_Zsize/2;
     auto SHCU_Bot_Pos = G4ThreeVector( SHCU_Bot_Xpos, SHCU_Bot_Ypos, SHCU_Bot_Zpos );
 
     new G4PVPlacement(
@@ -500,529 +822,13 @@ namespace grape
                   SHCU_Bot_Pos,         // its position
                   SHCU_Bot_LV,          // its logical volume
                   "SHCU_Bot_PV",        // its name
-                  module_LV,            // its mother  volume
+                  daq_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
 
-        
-    //----------------------------------
-    // Base Plate
-    //----------------------------------
-    // Solid Volume
-    auto ENCL_Bot_X = kENCL_Bot_Xsize;
-    auto ENCL_Bot_Y = kENCL_Bot_Ysize;
-    auto ENCL_Bot_Z = kENCL_Bot_Zsize;
-
-    auto ENCL_Bot_S = new G4Box(
-                  "ENCL_Bot_S",         // its name
-                  ENCL_Bot_X/2,         // its X dimension 
-                  ENCL_Bot_Y/2,         // its Y dimension
-                  ENCL_Bot_Z/2);        // its Z dimension
-    
-    // Logical Volume
-    auto ENCL_Bot_LV = new G4LogicalVolume(
-                  ENCL_Bot_S,           // its solid
-                  mAl6061,              // its material
-                  "ENCL_Bot_LV");       // its name
-
-    // Pysical Volume
-    auto ENCL_Bot_Xpos = 0.0*mm;
-    auto ENCL_Bot_Ypos = 0.0*mm;
-    auto ENCL_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z + SHCU_Bot_Z/2 + ENCL_Bot_Z/2;
-    auto ENCL_Bot_Pos = G4ThreeVector( ENCL_Bot_Xpos, ENCL_Bot_Ypos, ENCL_Bot_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_Bot_Pos,         // its position
-                  ENCL_Bot_LV,          // its logical volume
-                  "ENCL_Bot_PV",        // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-    //----------------------------------
-    // Side1 Shield - Lead
-    //----------------------------------
-    // Solid Volume
-    auto SHPB_Side1_X = kSHPB_Side1_Xsize;
-    auto SHPB_Side1_Y = kSHPB_Side1_Ysize;
-    auto SHPB_Side1_Z = kSHPB_Side1_Zsize;
-
-    auto SHPB_Side1_S = new G4Box(
-                  "SHPB_Side1_S",       // its name
-                  SHPB_Side1_X/2,       // its X dimension 
-                  SHPB_Side1_Y/2,       // its Y dimension
-                  SHPB_Side1_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHPB_Side1_LV = new G4LogicalVolume(
-                  SHPB_Side1_S,         // its solid
-                  mPb,              // its material
-                  "SHPB_Side1_LV");     // its name
-
-    // Pysical Volume
-    auto SHPB_Side1_Xpos = 0.0*mm;
-    auto SHPB_Side1_Ypos = 0.0*mm;
-    auto SHPB_Side1_Zpos = SHPB_Bot_Zpos - SHPB_Bot_Z/2 + SHPB_Side1_Z/2;
-    auto SHPB_Side1_Pos = G4ThreeVector();
-
-    SHPB_Side1_Xpos = SHPB_Bot_X/2 + SHPB_Side1_X/2;
-    SHPB_Side1_Pos = G4ThreeVector( SHPB_Side1_Xpos, SHPB_Side1_Ypos, SHPB_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHPB_Side1_Pos,       // its position
-                  SHPB_Side1_LV,        // its logical volume
-                  "SHPB_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHPB_Side1_Xpos = -SHPB_Bot_X/2 - SHPB_Side1_X/2;
-    SHPB_Side1_Pos = G4ThreeVector( SHPB_Side1_Xpos, SHPB_Side1_Ypos, SHPB_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHPB_Side1_Pos,       // its position
-                  SHPB_Side1_LV,        // its logical volume
-                  "SHPB_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    //----------------------------------
-    // Side1 Shield - Tin
-    //----------------------------------
-    // Solid Volume
-    auto SHSN_Side1_X = kSHSN_Side1_Xsize;
-    auto SHSN_Side1_Y = kSHSN_Side1_Ysize;
-    auto SHSN_Side1_Z = kSHSN_Side1_Zsize;
-
-    auto SHSN_Side1_S = new G4Box(
-                  "SHSN_Side1_S",       // its name
-                  SHSN_Side1_X/2,       // its X dimension 
-                  SHSN_Side1_Y/2,       // its Y dimension
-                  SHSN_Side1_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHSN_Side1_LV = new G4LogicalVolume(
-                  SHSN_Side1_S,         // its solid
-                  mSn,              // its material
-                  "SHSN_Side1_LV");     // its name
-
-    // Pysical Volume
-    auto SHSN_Side1_Xpos = 0.0*mm;
-    auto SHSN_Side1_Ypos = 0.0*mm;
-    auto SHSN_Side1_Zpos = SHSN_Bot_Zpos - SHSN_Bot_Z/2 + SHSN_Side1_Z/2;
-    auto SHSN_Side1_Pos = G4ThreeVector();
-
-    SHSN_Side1_Xpos = SHSN_Bot_X/2 + SHSN_Side1_X/2;
-    SHSN_Side1_Pos = G4ThreeVector( SHSN_Side1_Xpos, SHSN_Side1_Ypos, SHSN_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHSN_Side1_Pos,       // its position
-                  SHSN_Side1_LV,        // its logical volume
-                  "SHSN_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHSN_Side1_Xpos = -SHSN_Bot_X/2 - SHSN_Side1_X/2;
-    SHSN_Side1_Pos = G4ThreeVector( SHSN_Side1_Xpos, SHSN_Side1_Ypos, SHSN_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHSN_Side1_Pos,       // its position
-                  SHSN_Side1_LV,        // its logical volume
-                  "SHSN_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-    //----------------------------------
-    // Side1 Shield - Copper
-    //----------------------------------
-    // Solid Volume
-    auto SHCU_Side1_X = kSHCU_Side1_Xsize;
-    auto SHCU_Side1_Y = kSHCU_Side1_Ysize;
-    auto SHCU_Side1_Z = kSHCU_Side1_Zsize;
-
-    auto SHCU_Side1_S = new G4Box(
-                  "SHCU_Side1_S",       // its name
-                  SHCU_Side1_X/2,       // its X dimension 
-                  SHCU_Side1_Y/2,       // its Y dimension
-                  SHCU_Side1_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHCU_Side1_LV = new G4LogicalVolume(
-                  SHCU_Side1_S,         // its solid
-                  mCu,              // its material
-                  "SHCU_Side1_LV");     // its name
-
-    // Pysical Volume
-    auto SHCU_Side1_Xpos = 0.0*mm;
-    auto SHCU_Side1_Ypos = 0.0*mm;
-    auto SHCU_Side1_Zpos = SHCU_Bot_Zpos - SHCU_Bot_Z/2 + SHCU_Side1_Z/2;
-    auto SHCU_Side1_Pos = G4ThreeVector();
-
-    SHCU_Side1_Xpos = SHCU_Bot_X/2 + SHCU_Side1_X/2;
-    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHCU_Side1_Pos,       // its position
-                  SHCU_Side1_LV,        // its logical volume
-                  "SHCU_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHCU_Side1_Xpos = -SHCU_Bot_X/2 - SHCU_Side1_X/2;
-    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHCU_Side1_Pos,       // its position
-                  SHCU_Side1_LV,        // its logical volume
-                  "SHCU_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-
-    //----------------------------------
-    // Side1 Plate
-    //----------------------------------
-    // Solid Volume
-    auto ENCL_Side1_X = kENCL_Side1_Xsize;
-    auto ENCL_Side1_Y = kENCL_Side1_Ysize;
-    auto ENCL_Side1_Z = kENCL_Side1_Zsize;
-
-    auto ENCL_Side1_S = new G4Box(
-                  "ENCL_Side1_S",       // its name
-                  ENCL_Side1_X/2,       // its X dimension 
-                  ENCL_Side1_Y/2,       // its Y dimension
-                  ENCL_Side1_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto ENCL_Side1_LV = new G4LogicalVolume(
-                  ENCL_Side1_S,         // its solid
-                  mAl6061,              // its material
-                  "ENCL_Side1_LV");     // its name
-
-    // Pysical Volume
-    auto ENCL_Side1_Xpos = 0.0*mm;
-    auto ENCL_Side1_Ypos = 0.0*mm;
-    auto ENCL_Side1_Zpos = ENCL_Bot_Zpos - ENCL_Bot_Z/2 + ENCL_Side1_Z/2;
-    auto ENCL_Side1_Pos = G4ThreeVector();
-
-    ENCL_Side1_Xpos = ENCL_Bot_X/2 + ENCL_Side1_X/2;
-    ENCL_Side1_Pos = G4ThreeVector( ENCL_Side1_Xpos, ENCL_Side1_Ypos, ENCL_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_Side1_Pos,       // its position
-                  ENCL_Side1_LV,        // its logical volume
-                  "ENCL_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    ENCL_Side1_Xpos = -ENCL_Bot_X/2 - ENCL_Side1_X/2;
-    ENCL_Side1_Pos = G4ThreeVector( ENCL_Side1_Xpos, ENCL_Side1_Ypos, ENCL_Side1_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_Side1_Pos,       // its position
-                  ENCL_Side1_LV,        // its logical volume
-                  "ENCL_Side1_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-    //----------------------------------
-    // Side2 Shield - Lead
-    //----------------------------------
-    // Solid Volume
-    auto SHPB_Side2_X = kSHPB_Side2_Xsize;
-    auto SHPB_Side2_Y = kSHPB_Side2_Ysize;
-    auto SHPB_Side2_Z = kSHPB_Side2_Zsize;
-
-    auto SHPB_Side2_S = new G4Box(
-                  "SHPB_Side2_S",       // its name
-                  SHPB_Side2_X/2,       // its X dimension 
-                  SHPB_Side2_Y/2,       // its Y dimension
-                  SHPB_Side2_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHPB_Side2_LV = new G4LogicalVolume(
-                  SHPB_Side2_S,         // its solid
-                  mPb,              // its material
-                  "SHPB_Side2_LV");     // its name
-
-    // Pysical Volume
-    auto SHPB_Side2_Xpos = 0.0*mm;
-    auto SHPB_Side2_Ypos = 0.0*mm;
-    auto SHPB_Side2_Zpos = SHPB_Bot_Zpos - SHPB_Bot_Z/2 + SHPB_Side2_Z/2;
-    auto SHPB_Side2_Pos = G4ThreeVector();
-
-    SHPB_Side2_Ypos = SHPB_Bot_Y/2 + SHPB_Side2_Y/2;
-    SHPB_Side2_Pos = G4ThreeVector( SHPB_Side2_Xpos, SHPB_Side2_Ypos, SHPB_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHPB_Side2_Pos,       // its position
-                  SHPB_Side2_LV,        // its logical volume
-                  "SHPB_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHPB_Side2_Ypos = -SHPB_Bot_Y/2 - SHPB_Side2_Y/2;
-    SHPB_Side2_Pos = G4ThreeVector( SHPB_Side2_Xpos, SHPB_Side2_Ypos, SHPB_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHPB_Side2_Pos,       // its position
-                  SHPB_Side2_LV,        // its logical volume
-                  "SHPB_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-    //----------------------------------
-    // Side2 Shield - Tin
-    //----------------------------------
-    // Solid Volume
-    auto SHSN_Side2_X = kSHSN_Side2_Xsize;
-    auto SHSN_Side2_Y = kSHSN_Side2_Ysize;
-    auto SHSN_Side2_Z = kSHSN_Side2_Zsize;
-
-    auto SHSN_Side2_S = new G4Box(
-                  "SHSN_Side2_S",       // its name
-                  SHSN_Side2_X/2,       // its X dimension 
-                  SHSN_Side2_Y/2,       // its Y dimension
-                  SHSN_Side2_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHSN_Side2_LV = new G4LogicalVolume(
-                  SHSN_Side2_S,         // its solid
-                  mSn,              // its material
-                  "SHSN_Side2_LV");     // its name
-
-    // Pysical Volume
-    auto SHSN_Side2_Xpos = 0.0*mm;
-    auto SHSN_Side2_Ypos = 0.0*mm;
-    auto SHSN_Side2_Zpos = SHSN_Bot_Zpos - SHSN_Bot_Z/2 + SHSN_Side2_Z/2;
-    auto SHSN_Side2_Pos = G4ThreeVector();
-
-    SHSN_Side2_Ypos = SHSN_Bot_Y/2 + SHSN_Side2_Y/2;
-    SHSN_Side2_Pos = G4ThreeVector( SHSN_Side2_Xpos, SHSN_Side2_Ypos, SHSN_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHSN_Side2_Pos,       // its position
-                  SHSN_Side2_LV,        // its logical volume
-                  "SHSN_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHSN_Side2_Ypos = -SHSN_Bot_Y/2 - SHSN_Side2_Y/2;
-    SHSN_Side2_Pos = G4ThreeVector( SHSN_Side2_Xpos, SHSN_Side2_Ypos, SHSN_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHSN_Side2_Pos,       // its position
-                  SHSN_Side2_LV,        // its logical volume
-                  "SHSN_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    //----------------------------------
-    // Side2 Shield - Copper
-    //----------------------------------
-    // Solid Volume
-    auto SHCU_Side2_X = kSHCU_Side2_Xsize;
-    auto SHCU_Side2_Y = kSHCU_Side2_Ysize;
-    auto SHCU_Side2_Z = kSHCU_Side2_Zsize;
-
-    auto SHCU_Side2_S = new G4Box(
-                  "SHCU_Side2_S",       // its name
-                  SHCU_Side2_X/2,       // its X dimension 
-                  SHCU_Side2_Y/2,       // its Y dimension
-                  SHCU_Side2_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto SHCU_Side2_LV = new G4LogicalVolume(
-                  SHCU_Side2_S,         // its solid
-                  mCu,              // its material
-                  "SHCU_Side2_LV");     // its name
-
-    // Pysical Volume
-    auto SHCU_Side2_Xpos = 0.0*mm;
-    auto SHCU_Side2_Ypos = 0.0*mm;
-    auto SHCU_Side2_Zpos = SHCU_Bot_Zpos - SHCU_Bot_Z/2 + SHCU_Side2_Z/2;
-    auto SHCU_Side2_Pos = G4ThreeVector();
-
-    SHCU_Side2_Ypos = SHCU_Bot_Y/2 + SHCU_Side2_Y/2;
-    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHCU_Side2_Pos,       // its position
-                  SHCU_Side2_LV,        // its logical volume
-                  "SHCU_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    SHCU_Side2_Ypos = -SHCU_Bot_Y/2 - SHCU_Side2_Y/2;
-    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  SHCU_Side2_Pos,       // its position
-                  SHCU_Side2_LV,        // its logical volume
-                  "SHCU_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-
-
-    //----------------------------------
-    // Side2 Plate
-    //----------------------------------
-    // Solid Volume
-    auto ENCL_Side2_X = kENCL_Side2_Xsize;
-    auto ENCL_Side2_Y = kENCL_Side2_Ysize;
-    auto ENCL_Side2_Z = kENCL_Side2_Zsize;
-
-    auto ENCL_Side2_S = new G4Box(
-                  "ENCL_Side2_S",       // its name
-                  ENCL_Side2_X/2,       // its X dimension 
-                  ENCL_Side2_Y/2,       // its Y dimension
-                  ENCL_Side2_Z/2);      // its Z dimension
-    
-    // Logical Volume
-    auto ENCL_Side2_LV = new G4LogicalVolume(
-                  ENCL_Side2_S,         // its solid
-                  mAl6061,              // its material
-                  "ENCL_Side2_LV");     // its name
-
-    // Pysical Volume
-    auto ENCL_Side2_Xpos = 0.0*mm;
-    auto ENCL_Side2_Ypos = 0.0*mm;
-    auto ENCL_Side2_Zpos = ENCL_Bot_Zpos - ENCL_Bot_Z/2 + ENCL_Side2_Z/2;
-    auto ENCL_Side2_Pos = G4ThreeVector();
-
-    ENCL_Side2_Ypos = ENCL_Bot_Y/2 + ENCL_Side2_Y/2;
-    ENCL_Side2_Pos = G4ThreeVector( ENCL_Side2_Xpos, ENCL_Side2_Ypos, ENCL_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_Side2_Pos,       // its position
-                  ENCL_Side2_LV,        // its logical volume
-                  "ENCL_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    ENCL_Side2_Ypos = -ENCL_Bot_Y/2 - ENCL_Side2_Y/2;
-    ENCL_Side2_Pos = G4ThreeVector( ENCL_Side2_Xpos, ENCL_Side2_Ypos, ENCL_Side2_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_Side2_Pos,       // its position
-                  ENCL_Side2_LV,        // its logical volume
-                  "ENCL_Side2_PV",      // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    //----------------------------------
-    // Top Plate Edge
-    //----------------------------------
-    // Solid Volume
-    auto ENCL_TopEdge_X = kENCL_TopEdge_Xsize;
-    auto ENCL_TopEdge_Y = kENCL_TopEdge_Ysize;
-    auto ENCL_TopEdge_Z = kENCL_TopEdge_Zsize;
-
-    G4VSolid* ENCL_TopEdge_S;
-    ENCL_TopEdge_S = new G4Box(
-                  "ENCL_TopEdge_S",     // its name
-                  ENCL_TopEdge_X/2,     // its X dimension 
-                  ENCL_TopEdge_Y/2,     // its Y dimension
-                  ENCL_TopEdge_Z/2);    // its Z dimension
-                          
-    // Hole
-    auto ENCL_TopEdge_Hole_X = kENCL_TopEdge_Hole_Xsize;
-    auto ENCL_TopEdge_Hole_Y = kENCL_TopEdge_Hole_Ysize;
-    auto ENCL_TopEdge_Hole_Z = kENCL_TopEdge_Hole_Zsize;
-
-    auto ENCL_TopEdge_Hole_S = new G4Box(
-                  "ENCL_TopEdge_Hole_S",     // its name
-                  ENCL_TopEdge_Hole_X/2,     // its X dimension
-                  ENCL_TopEdge_Hole_Y/2,     // its Y dimension
-                  ENCL_TopEdge_Hole_Z/2);    // its Z dimension
-
-    auto ENCL_TopEdge_Hole_pos = G4ThreeVector( 0., 0., 0. );
-    ENCL_TopEdge_S = new G4SubtractionSolid( 
-                  "ENCL_TopEdge_S",     // its name
-                  ENCL_TopEdge_S,       // starting solid
-                  ENCL_TopEdge_Hole_S,  // solid to be subtracted
-                  0,                    // its rotation
-                  ENCL_TopEdge_Hole_pos );   // its position
-
-    // Logical Volume
-    auto ENCL_TopEdge_LV = new G4LogicalVolume(
-                  ENCL_TopEdge_S,       // its solid
-                  mAl6061,              // its material
-                  "ENCL_TopEdge_LV");   // its name
-
-    auto ENCL_TopEdge_Xpos = 0.0*mm;
-    auto ENCL_TopEdge_Ypos = 0.0*mm;
-    auto ENCL_TopEdge_Zpos = ENCL_Side1_Zpos + ENCL_Side1_Z/2 - ENCL_TopEdge_Z/2;
-    auto ENCL_TopEdge_Pos = G4ThreeVector( ENCL_TopEdge_Xpos, ENCL_TopEdge_Ypos, ENCL_TopEdge_Zpos );
-
-    new G4PVPlacement(
-                  0,                    // its rotation
-                  ENCL_TopEdge_Pos,     // its position
-                  ENCL_TopEdge_LV,      // its logical volume
-                  "ENCL_TopEdge_PV",    // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-
-    //----------------------------------
-    // Analog Power Boards
+   //----------------------------------
+    // ASICS
     //----------------------------------
     // Solid Volume
     auto APB_X = kAPB_Xsize;
@@ -1041,12 +847,12 @@ namespace grape
                   mPCB,                  // its material
                   "APB_LV");            // its name
 
-    auto APB_Xnum = kNumScint_X;
-    auto APB_Xpitch = kScint_Xpitch;
-    auto APB_Xoffset = ( kScint_Xpitch * (kNumScint_X-1) / 2 );
+    auto APB_Xnum = kNumAPB;
+    auto APB_Xpitch = kAPB_X_Pitch;
+    auto APB_Xoffset = ( kScint_Xpitch * (kNumAPB) / 2 );
     auto APB_Xpos = 0.0*mm;
     auto APB_Ypos = 0.0*mm;
-    auto APB_Zpos = ENCL_Bot_Zpos + ENCL_Bot_Z/2 + kAPB_Zoffset + APB_Z/2;
+    auto APB_Zpos = ENCL_Bot_Zpos - ENCL_Bot_Z/2 - kAPB_Zoffset - APB_Z/2;
     auto APB_Pos = G4ThreeVector();
 
     for (auto row = 0; row<APB_Xnum; row++) {
@@ -1058,85 +864,333 @@ namespace grape
                   APB_Pos,              // its position
                   APB_LV,               // its logical volume
                   "APB_PV",             // its name
-                  module_LV,            // its mother  volume
+                  daq_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
     }
 
     //----------------------------------
-    // APB - MIB Connectors
+    // FEMS
     //----------------------------------
+
     // Solid Volume
-    auto APB_Con_X = kAPB_Con_Xsize;
-    auto APB_Con_Y = kAPB_Con_Ysize;
-    auto APB_Con_Z = kAPB_Con_Zsize;
+    auto FEMBD_X = kAPB_X_Pitch;
+    auto FEMBD_Y = kMIB_Ysize/4;
+    auto FEMBD_Z = kMIB_Zsize;
 
-    auto APB_Con_S = new G4Box(
-                  "APB_Con_S",          // its name
-                  APB_Con_X/2,          // its X dimension 
-                  APB_Con_Y/2,          // its Y dimension
-                  APB_Con_Z/2);         // its Z dimension
-                          
-    auto APB_Con_LV = new G4LogicalVolume(
-                  APB_Con_S,            // its solid
-                  mConnector,           // its material
-                  "APB_Con_LV");        // its name
-
-    auto APB_Con_Xnum = APB_Xnum;
-    auto APB_Con_Xpitch = APB_Xpitch;
-    auto APB_Con_Xoffset = ( kScint_Xpitch * (kNumScint_X-1) / 2 ) - APB_X/2 - APB_Con_X/2;
-    auto APB_Con_Xpos = 0.0*mm;
-    auto APB_Con_Ypos = 0.0*mm;
-    auto APB_Con_Zpos = APB_Zpos + APB_Z/2 - APB_Con_Z/2;
-    auto APB_Con_Pos = G4ThreeVector();
-
-    for (auto row = 0; row<APB_Con_Xnum; row++) {
-      APB_Con_Xpos =  ( row * APB_Con_Xpitch ) - APB_Con_Xoffset;
-      APB_Con_Pos = G4ThreeVector( APB_Con_Xpos, APB_Con_Ypos, APB_Con_Zpos );
-
-      new G4PVPlacement(
-                  0,                    // its rotation
-                  APB_Con_Pos,          // its position
-                  APB_Con_LV,           // its logical volume
-                  "APB_Con_PV",         // its name
-                  module_LV,            // its mother  volume
-                  false,                // no boolean operation
-                  0,                    // copy number
-                  fCheckOverlaps);      // checking overlaps 
-    }
-
-    //----------------------------------
-    // Module Interface Board (MIB)
-    //----------------------------------
-    // Solid Volume
-    auto MIB_X = kMIB_Xsize;
-    auto MIB_Y = kMIB_Ysize;
-    auto MIB_Z = kMIB_Zsize;
-
-    auto MIB_S = new G4Box(
+    auto FEMBD_S = new G4Box(
                   "MIB_S",              // its name
-                  MIB_X/2,              // its X dimension 
-                  MIB_Y/2,              // its Y dimension
-                  MIB_Z/2);             // its Z dimension
+                  FEMBD_X/2,              // its X dimension 
+                  FEMBD_Y/2,              // its Y dimension
+                  FEMBD_Z/2);             // its Z dimension
     
     // Logical Volume     
-    auto MIB_LV = new G4LogicalVolume(
-                  MIB_S,                // its solid
+    auto FEMBD_LV = new G4LogicalVolume(
+                  FEMBD_S,                // its solid
                   mPCB,                  // its material
                   "MIB_LV");            // its name
 
-    auto MIB_Xpos = 0.0*mm;
-    auto MIB_Ypos = 0.0*mm;
-    auto MIB_Zpos = APB_Con_Zpos + APB_Con_Z/2 + kAPB_MIB_Zoffset + MIB_Z/2;
-    auto MIB_Pos = G4ThreeVector( MIB_Xpos, MIB_Ypos, MIB_Zpos );
+    auto FEMBD_Xpos = - kDAQ_Module_Zsize/2 + FEMBD_X/2 + kAPB_X_Pitch;
+    auto FEMBD_Ypos = 0.0*mm;
+    auto FEMBD_Zpos = APB_Zpos - APB_Z/2 - kMIB_Zoffset - FEMBD_Z/2; 
+    // APB_Con_Zpos + APB_Con_Z/2 + kAPB_MIB_Zoffset + FEMBD_Z/2;
+    auto FEMBD_Pos = G4ThreeVector( FEMBD_Xpos, FEMBD_Ypos, FEMBD_Zpos );
+
+for (auto row = 0; row<APB_Xnum/2; row++) {
+      FEMBD_Xpos =  ( row * (FEMBD_X + kAPB_X_Pitch)) - APB_Xpos - FEMBD_X;
+      FEMBD_Pos = G4ThreeVector( FEMBD_Xpos, FEMBD_Ypos, FEMBD_Zpos );
+
+      new G4PVPlacement(
+                  0,                    // its rotation
+                  FEMBD_Pos,              // its position
+                  FEMBD_LV,               // its logical volume
+                  "FEMBD_PV",             // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+    }
+
+    //----------------------------------
+    // DAQ Stack
+    //----------------------------------
+    
+    // Solid Volume
+    auto DAQ_STK1_X = kMIB_Xsize/3;
+    auto DAQ_STK1_Y = kMIB_Ysize/3;
+    auto DAQ_STK1_Z = kMIB_Zsize;
+
+    auto DAQ_STK1_S = new G4Box(
+                  "MIB_S",              // its name
+                  DAQ_STK1_X/2,              // its X dimension 
+                  DAQ_STK1_Y/2,              // its Y dimension
+                  DAQ_STK1_Z/2);             // its Z dimension
+    
+    // Logical Volume     
+    auto DAQ_STK1_LV = new G4LogicalVolume(
+                  DAQ_STK1_S,                // its solid
+                  mPCB,                  // its material
+                  "MIB_LV");            // its name
+
+    auto DAQ_STK1_Xpos = - kDAQ_Module_Xsize/2 + DAQ_STK1_X/2 + kAPB_X_Pitch;
+    auto DAQ_STK1_Ypos = - kDAQ_Module_Ysize/2 + DAQ_STK1_Y/2 + kAPB_Y_Pitch;
+    auto DAQ_STK1_Zpos = APB_Zpos - APB_Z/2 - kMIB_Zoffset - DAQ_STK1_Z/2; 
+    // APB_Con_Zpos + APB_Con_Z/2 + kAPB_MIB_Zoffset + DAQ_STK1_Z/2;
+    auto DAQ_STK1_Pos = G4ThreeVector( DAQ_STK1_Xpos, DAQ_STK1_Ypos, DAQ_STK1_Zpos );
 
     new G4PVPlacement(
                   0,                    // its rotation
-                  MIB_Pos,              // its position
-                  MIB_LV,               // its logical volume
-                  "MIB_PV",             // its name
-                  module_LV,            // its mother  volume
+                  DAQ_STK1_Pos,              // its position
+                  DAQ_STK1_LV,               // its logical volume
+                  "DAQ_STK1_PV",             // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    // Solid Volume
+    auto DAQ_STK2_X = kMIB_Xsize/3;
+    auto DAQ_STK2_Y = kMIB_Ysize/2;
+    auto DAQ_STK2_Z = kMIB_Zsize;
+
+    auto DAQ_STK2_S = new G4Box(
+                  "MIB_S",              // its name
+                  DAQ_STK2_X/2,              // its X dimension 
+                  DAQ_STK2_Y/2,              // its Y dimension
+                  DAQ_STK2_Z/2);             // its Z dimension
+    
+    // Logical Volume     
+    auto DAQ_STK2_LV = new G4LogicalVolume(
+                  DAQ_STK2_S,                // its solid
+                  mPCB,                  // its material
+                  "MIB_LV");            // its name
+
+    auto DAQ_STK2_Xpos = - kDAQ_Module_Xsize/2 + DAQ_STK2_X/2 + kAPB_X_Pitch;
+    auto DAQ_STK2_Ypos = - kDAQ_Module_Ysize/2 + DAQ_STK2_Y/2 + kAPB_Y_Pitch;
+    auto DAQ_STK2_Zpos = DAQ_STK1_Zpos - kMIB_Zoffset*3 - DAQ_STK2_Z/2; 
+    
+    auto DAQ_STK2_Pos = G4ThreeVector( DAQ_STK2_Xpos, DAQ_STK2_Ypos, DAQ_STK2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  DAQ_STK2_Pos,              // its position
+                  DAQ_STK2_LV,               // its logical volume
+                  "DAQ_STK2_PV",             // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    // Solid Volume
+    auto DAQ_STK3_X = kMIB_Xsize/2;
+    auto DAQ_STK3_Y = kMIB_Ysize/2;
+    auto DAQ_STK3_Z = kMIB_Zsize;
+
+    auto DAQ_STK3_S = new G4Box(
+                  "MIB_S",              // its name
+                  DAQ_STK3_X/2,              // its X dimension 
+                  DAQ_STK3_Y/2,              // its Y dimension
+                  DAQ_STK3_Z/2);             // its Z dimension
+    
+    // Logical Volume     
+    auto DAQ_STK3_LV = new G4LogicalVolume(
+                  DAQ_STK3_S,                // its solid
+                  mPCB,                  // its material
+                  "MIB_LV");            // its name
+
+    auto DAQ_STK3_Xpos = - kDAQ_Module_Xsize/2 + DAQ_STK3_X/2 + kAPB_X_Pitch;
+    auto DAQ_STK3_Ypos = - kDAQ_Module_Ysize/2 + DAQ_STK3_Y/2 + kAPB_Y_Pitch;
+    auto DAQ_STK3_Zpos = DAQ_STK2_Zpos - kMIB_Zoffset*2 - DAQ_STK3_Z/2; 
+    
+    auto DAQ_STK3_Pos = G4ThreeVector( DAQ_STK3_Xpos, DAQ_STK3_Ypos, DAQ_STK3_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  DAQ_STK3_Pos,              // its position
+                  DAQ_STK3_LV,               // its logical volume
+                  "DAQ_STK3_PV",             // its name
+                  daq_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // APB Connectors
+    //----------------------------------
+    // Solid Volume
+    auto APB_Con_Side1_X = kAPB_Con_Xsize;
+    auto APB_Con_Side1_Y = kAPB_Con_Ysize;
+    auto APB_Con_Side1_Z = kAPB_Con_Zsize;
+
+    auto APB_Con_Side1_S = new G4Box(
+                  "APB_Con_Side1_S",       // its name
+                  APB_Con_Side1_X/2,       // its X dimension 
+                  APB_Con_Side1_Y/2,       // its Y dimension
+                  APB_Con_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto APB_Con_Side1_LV = new G4LogicalVolume(
+                  APB_Con_Side1_S,         // its solid
+                  mConnector,              // its material
+                  "APB_Con_Side1_LV");     // its name
+
+    // Pysical Volume
+
+    auto APB_Con_Side1_Xpos = 0.0*mm;
+    auto APB_Con_Side1_Ypos = 0.0*mm;
+    auto APB_Con_Side1_Zpos =  MIB_Zpos - MIB_Z/2 - APB_Con_Side1_Z/2; 
+    auto APB_Con_Side1_Pos = G4ThreeVector();
+
+    auto APB_Con_Side_Num = 2;
+
+    APB_Con_Side1_Xpos = MIB_X/2 - APB_Con_Side1_X/2;
+    auto APB_Con_Pitch = MIB_Y/2;
+    for (auto row = 0; row<APB_Con_Side_Num; row++) {
+      APB_Con_Side1_Ypos =  ( row * (APB_Con_Pitch + APB_Con_Side1_Y/2)) - MIB_Y/4;
+      APB_Con_Side1_Pos = G4ThreeVector( APB_Con_Side1_Xpos, APB_Con_Side1_Ypos, APB_Con_Side1_Zpos );
+
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    APB_Con_Side1_Pos,       // its position
+                    APB_Con_Side1_LV,        // its logical volume
+                    "APB_Con_Side1_PV",      // its name
+                    daq_module_LV,            // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps
+    } 
+
+    APB_Con_Side1_Xpos = -MIB_X/2 + APB_Con_Side1_X/2;
+    APB_Con_Side1_Ypos = 0.0*mm;
+    for (auto row = 0; row<APB_Con_Side_Num; row++) {
+      APB_Con_Side1_Ypos =  ( row * (APB_Con_Pitch + APB_Con_Side1_Y/2)) - MIB_Y/4;
+      APB_Con_Side1_Pos = G4ThreeVector( APB_Con_Side1_Xpos, APB_Con_Side1_Ypos, APB_Con_Side1_Zpos );
+
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    APB_Con_Side1_Pos,       // its position
+                    APB_Con_Side1_LV,        // its logical volume
+                    "APB_Con_Side1_PV",      // its name
+                    daq_module_LV,            // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+    }
+
+    // Connector Side2
+    auto APB_Con_Side2_X = kAPB_Con_Ysize;
+    auto APB_Con_Side2_Y = kAPB_Con_Xsize;
+    auto APB_Con_Side2_Z = kAPB_Con_Zsize;
+
+    auto APB_Con_Side2_S = new G4Box(
+                  "APB_Con_Side2_S",       // its name
+                  APB_Con_Side2_X/2,       // its X dimension 
+                  APB_Con_Side2_Y/2,       // its Y dimension
+                  APB_Con_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto APB_Con_Side2_LV = new G4LogicalVolume(
+                  APB_Con_Side2_S,         // its solid
+                  mConnector,              // its material
+                  "APB_Con_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto APB_Con_Side2_Xpos = 0.0*mm;
+    auto APB_Con_Side2_Ypos = 0.0*mm;
+    auto APB_Con_Side2_Zpos =  MIB_Zpos - MIB_Z/2 - APB_Con_Side2_Z/2; 
+    auto APB_Con_Side2_Pos = G4ThreeVector();
+
+    // auto APB_Con_Side2_Xnum = 2;
+    // auto APB_Con_Side2_Xpitch = APB_Xpitch;
+    // for (auto row = 0; row<APB_Con_Side2_Xnum; row++) {
+    //   APB_Con_Xpos =  ( row * APB_Con_Side2_Xpitch ) - APB_Con_Side2_Xoffset;
+    //   APB_Con_Pos = G4ThreeVector( APB_Con_Side2_Xpos, APB_Con_Side2_Ypos, APB_Con_Side2_Zpos );
+
+    APB_Con_Side2_Ypos = MIB_Y/2 - APB_Con_Side2_Y/2;
+    APB_Con_Side2_Pos = G4ThreeVector( APB_Con_Side2_Xpos, APB_Con_Side2_Ypos, APB_Con_Side2_Zpos );
+
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  APB_Con_Side2_Pos,       // its position
+                  APB_Con_Side2_LV,        // its logical volume
+                  "APB_Con_Side2_PV",      // its name
+                  daq_module_LV,           // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    APB_Con_Side2_Ypos = -MIB_Y/2 + APB_Con_Side2_Y/2;
+    APB_Con_Side2_Pos = G4ThreeVector( APB_Con_Side2_Xpos, APB_Con_Side2_Ypos, APB_Con_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  APB_Con_Side2_Pos,       // its position
+                  APB_Con_Side2_LV,        // its logical volume
+                  "APB_Con_Side2_PV",      // its name
+                  daq_module_LV,           // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
+        
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Detector Module
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //----------------------------------
+    // MIB Plate Mount
+    //----------------------------------
+    // Solid Volume
+    auto MIBP_Mount_X = kMIBP_Mount_Xsize;
+    auto MIBP_Mount_Y = kMIBP_Mount_Ysize;
+    auto MIBP_Mount_Z = kMIBP_Mount_Zsize;
+
+    G4VSolid* MIBP_Mount_S;
+    MIBP_Mount_S = new G4Box(
+                  "MIBP_Mount_S",        // its name
+                  MIBP_Mount_X/2,        // its X dimension 
+                  MIBP_Mount_Y/2,        // its Y dimension
+                  MIBP_Mount_Z/2);       // its Z dimension
+                          
+    // Hole
+    auto MIBP_Mount_Hole_X = kMIBP_Mount_Hole_Xsize;
+    auto MIBP_Mount_Hole_Y = kMIBP_Mount_Hole_Ysize;
+    auto MIBP_Mount_Hole_Z = kMIBP_Mount_Hole_Zsize;
+
+    auto MIBP_Mount_Hole_S = new G4Box(
+                  "MIBP_Mount_Hole_S",   // its name
+                  MIBP_Mount_Hole_X/2,   // its X dimension
+                  MIBP_Mount_Hole_Y/2,   // its Y dimension
+                  MIBP_Mount_Hole_Z/2);  // its Z dimension
+
+    auto MIBP_Mount_Hole_pos = G4ThreeVector( 0., 0., 0. );
+    MIBP_Mount_S = new G4SubtractionSolid( 
+                  "MIBP_Mount_S",        // its name
+                  MIBP_Mount_S,          // starting solid
+                  MIBP_Mount_Hole_S,     // solid to be subtracted
+                  0,                    // its rotation
+                  MIBP_Mount_Hole_pos ); // its position
+
+    // Logical Volume
+    auto MIBP_Mount_LV = new G4LogicalVolume(
+                  MIBP_Mount_S,          // its solid
+                  mODM,              // its material
+                  "MIBP_Mount_LV");      // its name
+
+    auto MIBP_Mount_Xpos = 0.0*mm;
+    auto MIBP_Mount_Ypos = 0.0*mm;
+    auto MIBP_Mount_Zpos = -kDet_Module_Zsize/2 + MIBP_Mount_Z/2;
+    auto MIBP_Mount_Pos = G4ThreeVector( MIBP_Mount_Xpos, MIBP_Mount_Ypos, MIBP_Mount_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  MIBP_Mount_Pos,        // its position
+                  MIBP_Mount_LV,         // its logical volume
+                  "MIBP_Mount_PV",       // its name
+                  det_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -1184,7 +1238,7 @@ namespace grape
 
     auto MIBP_Edge_Xpos = 0.0*mm;
     auto MIBP_Edge_Ypos = 0.0*mm;
-    auto MIBP_Edge_Zpos = MIB_Zpos + MIB_Z/2 + kMIBP_Zoffset + MIBP_Edge_Z/2;
+    auto MIBP_Edge_Zpos = MIBP_Mount_Zpos + MIBP_Mount_Z/2 + MIBP_Edge_Z/2;
     auto MIBP_Edge_Pos = G4ThreeVector( MIBP_Edge_Xpos, MIBP_Edge_Ypos, MIBP_Edge_Zpos );
 
     new G4PVPlacement(
@@ -1192,10 +1246,594 @@ namespace grape
                   MIBP_Edge_Pos,        // its position
                   MIBP_Edge_LV,         // its logical volume
                   "MIBP_Edge_PV",       // its name
-                  module_LV,            // its mother  volume
+                  det_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Array Side Enclosure - Aluminum
+    //----------------------------------
+    // Solid Volume
+    auto SHAL_Side1_X = kSHAL_Side1_Xsize;
+    auto SHAL_Side1_Y = kSHAL_Side1_Ysize;
+    auto SHAL_Side1_Z = kSHAL_Side1_Zsize;
+
+    auto SHAL_Side1_S = new G4Box(
+                  "SHAL_Side1_S",       // its name
+                  SHAL_Side1_X/2,       // its X dimension 
+                  SHAL_Side1_Y/2,       // its Y dimension
+                  SHAL_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHAL_Side1_LV = new G4LogicalVolume(
+                  SHAL_Side1_S,         // its solid
+                  mAl6061,              // its material
+                  "SHAL_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto SHAL_Side1_Xpos = 0.0*mm;
+    auto SHAL_Side1_Ypos = 0.0*mm;
+    auto SHAL_Side1_Zpos = MIBP_Edge_Zpos - MIBP_Edge_Z/2 + kSHPB_Side1_Zsize/2;
+    auto SHAL_Side1_Pos = G4ThreeVector();
+
+    SHAL_Side1_Xpos = kENCL_TopEdge_Xsize/2 - SHAL_Side1_X/2;
+    SHAL_Side1_Pos = G4ThreeVector( SHAL_Side1_Xpos, SHAL_Side1_Ypos, SHAL_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHAL_Side1_Pos,       // its position
+                  SHAL_Side1_LV,        // its logical volume
+                  "SHAL_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHAL_Side1_Xpos = -kENCL_TopEdge_Xsize/2 + SHAL_Side1_X/2;
+    SHAL_Side1_Pos = G4ThreeVector( SHAL_Side1_Xpos, SHAL_Side1_Ypos, SHAL_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHAL_Side1_Pos,       // its position
+                  SHAL_Side1_LV,        // its logical volume
+                  "SHAL_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+    
+
+    //----------------------------------
+    // Side1 Shield - Lead
+    //----------------------------------
+    // Solid Volume
+    auto SHPB_Side1_X = kSHPB_Side1_Xsize;
+    auto SHPB_Side1_Y = kSHPB_Side1_Ysize;
+    auto SHPB_Side1_Z = kSHPB_Side1_Zsize;
+
+    auto SHPB_Side1_S = new G4Box(
+                  "SHPB_Side1_S",       // its name
+                  SHPB_Side1_X/2,       // its X dimension 
+                  SHPB_Side1_Y/2,       // its Y dimension
+                  SHPB_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHPB_Side1_LV = new G4LogicalVolume(
+                  SHPB_Side1_S,         // its solid
+                  mPb,              // its material
+                  "SHPB_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto SHPB_Side1_Xpos = 0.0*mm;
+    auto SHPB_Side1_Ypos = 0.0*mm;
+    auto SHPB_Side1_Zpos =  MIBP_Edge_Zpos + MIBP_Edge_Z/2 + kSHPB_Side1_Zsize/2; 
+    auto SHPB_Side1_Pos = G4ThreeVector();
+
+    SHPB_Side1_Xpos = -SHAL_Side1_Xpos + SHAL_Side1_X/2 + SHPB_Side1_X/2;
+    SHPB_Side1_Pos = G4ThreeVector( SHPB_Side1_Xpos, SHPB_Side1_Ypos, SHPB_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHPB_Side1_Pos,       // its position
+                  SHPB_Side1_LV,        // its logical volume
+                  "SHPB_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHPB_Side1_Xpos = SHAL_Side1_Xpos - SHAL_Side1_X/2 - SHPB_Side1_X/2;
+    SHPB_Side1_Pos = G4ThreeVector( SHPB_Side1_Xpos, SHPB_Side1_Ypos, SHPB_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHPB_Side1_Pos,       // its position
+                  SHPB_Side1_LV,        // its logical volume
+                  "SHPB_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Side1 Shield - Tin
+    //----------------------------------
+    // Solid Volume
+    auto SHSN_Side1_X = kSHSN_Side1_Xsize;
+    auto SHSN_Side1_Y = kSHSN_Side1_Ysize;
+    auto SHSN_Side1_Z = kSHSN_Side1_Zsize;
+
+    auto SHSN_Side1_S = new G4Box(
+                  "SHSN_Side1_S",       // its name
+                  SHSN_Side1_X/2,       // its X dimension 
+                  SHSN_Side1_Y/2,       // its Y dimension
+                  SHSN_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHSN_Side1_LV = new G4LogicalVolume(
+                  SHSN_Side1_S,         // its solid
+                  mSn,              // its material
+                  "SHSN_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto SHSN_Side1_Xpos = 0.0*mm;
+    auto SHSN_Side1_Ypos = 0.0*mm;
+    auto SHSN_Side1_Zpos = SHPB_Side1_Zpos;
+    auto SHSN_Side1_Pos = G4ThreeVector();
+
+    SHSN_Side1_Xpos = - SHPB_Side1_Xpos + SHPB_Side1_X/2 + SHSN_Side1_X/2;
+    SHSN_Side1_Pos = G4ThreeVector( SHSN_Side1_Xpos, SHSN_Side1_Ypos, SHSN_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHSN_Side1_Pos,       // its position
+                  SHSN_Side1_LV,        // its logical volume
+                  "SHSN_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHSN_Side1_Xpos = SHPB_Side1_Xpos - SHPB_Side1_X/2 - SHSN_Side1_X/2;
+    SHSN_Side1_Pos = G4ThreeVector( SHSN_Side1_Xpos, SHSN_Side1_Ypos, SHSN_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHSN_Side1_Pos,       // its position
+                  SHSN_Side1_LV,        // its logical volume
+                  "SHSN_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
+    //----------------------------------
+    // Side1 Shield - Copper
+    //----------------------------------
+    // Solid Volume
+    auto SHCU_Side1_X = kSHCU_Side1_Xsize;
+    auto SHCU_Side1_Y = kSHCU_Side1_Ysize;
+    auto SHCU_Side1_Z = kSHCU_Side1_Zsize;
+
+    auto SHCU_Side1_S = new G4Box(
+                  "SHCU_Side1_S",       // its name
+                  SHCU_Side1_X/2,       // its X dimension 
+                  SHCU_Side1_Y/2,       // its Y dimension
+                  SHCU_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHCU_Side1_LV = new G4LogicalVolume(
+                  SHCU_Side1_S,         // its solid
+                  mCu,              // its material
+                  "SHCU_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto SHCU_Side1_Xpos = 0.0*mm;
+    auto SHCU_Side1_Ypos = 0.0*mm;
+    auto SHCU_Side1_Zpos = SHPB_Side1_Zpos;
+    auto SHCU_Side1_Pos = G4ThreeVector();
+
+    SHCU_Side1_Xpos = - SHSN_Side1_Xpos + SHSN_Side1_X/2 + SHCU_Side1_X/2;
+    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side1_Pos,       // its position
+                  SHCU_Side1_LV,        // its logical volume
+                  "SHCU_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHCU_Side1_Xpos = SHSN_Side1_Xpos - SHSN_Side1_X/2 - SHCU_Side1_X/2;
+    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side1_Pos,       // its position
+                  SHCU_Side1_LV,        // its logical volume
+                  "SHCU_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
+
+    //----------------------------------
+    // Side1 Plate
+    //----------------------------------
+    // Solid Volume
+    auto ENCL_Side1_X = kENCL_Side1_Xsize;
+    auto ENCL_Side1_Y = kENCL_Side1_Ysize;
+    auto ENCL_Side1_Z = kENCL_Side1_Zsize;
+
+    auto ENCL_Side1_S = new G4Box(
+                  "ENCL_Side1_S",       // its name
+                  ENCL_Side1_X/2,       // its X dimension 
+                  ENCL_Side1_Y/2,       // its Y dimension
+                  ENCL_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto ENCL_Side1_LV = new G4LogicalVolume(
+                  ENCL_Side1_S,         // its solid
+                  mAl6061,              // its material
+                  "ENCL_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto ENCL_Side1_Xpos = 0.0*mm;
+    auto ENCL_Side1_Ypos = 0.0*mm;
+    auto ENCL_Side1_Zpos = SHPB_Side1_Zpos;
+    auto ENCL_Side1_Pos = G4ThreeVector();
+
+    ENCL_Side1_Xpos = - SHCU_Side1_Xpos + SHCU_Side1_X/2 + ENCL_Side1_X/2;
+    ENCL_Side1_Pos = G4ThreeVector( ENCL_Side1_Xpos, ENCL_Side1_Ypos, ENCL_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_Side1_Pos,       // its position
+                  ENCL_Side1_LV,        // its logical volume
+                  "ENCL_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    ENCL_Side1_Xpos = SHCU_Side1_Xpos - SHCU_Side1_X/2 - ENCL_Side1_X/2;
+    ENCL_Side1_Pos = G4ThreeVector( ENCL_Side1_Xpos, ENCL_Side1_Ypos, ENCL_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_Side1_Pos,       // its position
+                  ENCL_Side1_LV,        // its logical volume
+                  "ENCL_Side1_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Array Side Enclosure - Aluminum
+    //----------------------------------
+    // Solid Volume
+    auto SHAL_Side2_X = kSHAL_Side2_Xsize;
+    auto SHAL_Side2_Y = kSHAL_Side2_Ysize;
+    auto SHAL_Side2_Z = kSHAL_Side2_Zsize;
+
+    auto SHAL_Side2_S = new G4Box(
+                  "SHAL_Side2_S",       // its name
+                  SHAL_Side2_X/2,       // its X dimension 
+                  SHAL_Side2_Y/2,       // its Y dimension
+                  SHAL_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHAL_Side2_LV = new G4LogicalVolume(
+                  SHAL_Side2_S,         // its solid
+                  mAl6061,              // its material
+                  "SHAL_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto SHAL_Side2_Xpos = 0.0*mm;
+    auto SHAL_Side2_Ypos = 0.0*mm;
+    auto SHAL_Side2_Zpos = SHAL_Side1_Zpos;
+    auto SHAL_Side2_Pos = G4ThreeVector();
+
+    SHAL_Side2_Ypos = kENCL_TopEdge_Ysize/2 - SHAL_Side2_Y/2;
+    SHAL_Side2_Pos = G4ThreeVector( SHAL_Side2_Xpos, SHAL_Side2_Ypos, SHAL_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHAL_Side2_Pos,       // its position
+                  SHAL_Side2_LV,        // its logical volume
+                  "SHAL_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHAL_Side2_Ypos = - kENCL_TopEdge_Ysize/2 + SHAL_Side2_Y/2;
+    SHAL_Side2_Pos = G4ThreeVector( SHAL_Side2_Xpos, SHAL_Side2_Ypos, SHAL_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHAL_Side2_Pos,       // its position
+                  SHAL_Side2_LV,        // its logical volume
+                  "SHAL_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps       
+
+    //----------------------------------
+    // Side2 Shield - Lead
+    //----------------------------------
+    // Solid Volume
+    auto SHPB_Side2_X = kSHPB_Side2_Xsize;
+    auto SHPB_Side2_Y = kSHPB_Side2_Ysize;
+    auto SHPB_Side2_Z = kSHPB_Side2_Zsize;
+
+    auto SHPB_Side2_S = new G4Box(
+                  "SHPB_Side2_S",       // its name
+                  SHPB_Side2_X/2,       // its X dimension 
+                  SHPB_Side2_Y/2,       // its Y dimension
+                  SHPB_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHPB_Side2_LV = new G4LogicalVolume(
+                  SHPB_Side2_S,         // its solid
+                  mPb,              // its material
+                  "SHPB_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto SHPB_Side2_Xpos = 0.0*mm;
+    auto SHPB_Side2_Ypos = 0.0*mm;
+    auto SHPB_Side2_Zpos = SHPB_Side1_Zpos;
+    auto SHPB_Side2_Pos = G4ThreeVector();
+
+    SHPB_Side2_Ypos = - SHAL_Side2_Ypos + SHAL_Side2_Y/2 + SHPB_Side2_Y/2;
+    SHPB_Side2_Pos = G4ThreeVector( SHPB_Side2_Xpos, SHPB_Side2_Ypos, SHPB_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHPB_Side2_Pos,       // its position
+                  SHPB_Side2_LV,        // its logical volume
+                  "SHPB_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHPB_Side2_Ypos = SHAL_Side2_Ypos - SHAL_Side2_Y/2 - SHPB_Side2_Y/2;
+    SHPB_Side2_Pos = G4ThreeVector( SHPB_Side2_Xpos, SHPB_Side2_Ypos, SHPB_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHPB_Side2_Pos,       // its position
+                  SHPB_Side2_LV,        // its logical volume
+                  "SHPB_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
+    //----------------------------------
+    // Side2 Shield - Tin
+    //----------------------------------
+    // Solid Volume
+    auto SHSN_Side2_X = kSHSN_Side2_Xsize;
+    auto SHSN_Side2_Y = kSHSN_Side2_Ysize;
+    auto SHSN_Side2_Z = kSHSN_Side2_Zsize;
+
+    auto SHSN_Side2_S = new G4Box(
+                  "SHSN_Side2_S",       // its name
+                  SHSN_Side2_X/2,       // its X dimension 
+                  SHSN_Side2_Y/2,       // its Y dimension
+                  SHSN_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHSN_Side2_LV = new G4LogicalVolume(
+                  SHSN_Side2_S,         // its solid
+                  mSn,              // its material
+                  "SHSN_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto SHSN_Side2_Xpos = 0.0*mm;
+    auto SHSN_Side2_Ypos = 0.0*mm;
+    auto SHSN_Side2_Zpos = SHPB_Side1_Zpos;
+    auto SHSN_Side2_Pos = G4ThreeVector();
+
+    SHSN_Side2_Ypos = - SHPB_Side2_Ypos + SHPB_Side2_Y/2 + SHSN_Side2_Y/2;
+    SHSN_Side2_Pos = G4ThreeVector( SHSN_Side2_Xpos, SHSN_Side2_Ypos, SHSN_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHSN_Side2_Pos,       // its position
+                  SHSN_Side2_LV,        // its logical volume
+                  "SHSN_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHSN_Side2_Ypos = SHPB_Side2_Ypos - SHPB_Side2_Y/2  - SHSN_Side2_Y/2;
+    SHSN_Side2_Pos = G4ThreeVector( SHSN_Side2_Xpos, SHSN_Side2_Ypos, SHSN_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHSN_Side2_Pos,       // its position
+                  SHSN_Side2_LV,        // its logical volume
+                  "SHSN_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Side2 Shield - Copper
+    //----------------------------------
+    // Solid Volume
+    auto SHCU_Side2_X = kSHCU_Side2_Xsize;
+    auto SHCU_Side2_Y = kSHCU_Side2_Ysize;
+    auto SHCU_Side2_Z = kSHCU_Side2_Zsize;
+
+    auto SHCU_Side2_S = new G4Box(
+                  "SHCU_Side2_S",       // its name
+                  SHCU_Side2_X/2,       // its X dimension 
+                  SHCU_Side2_Y/2,       // its Y dimension
+                  SHCU_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHCU_Side2_LV = new G4LogicalVolume(
+                  SHCU_Side2_S,         // its solid
+                  mCu,              // its material
+                  "SHCU_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto SHCU_Side2_Xpos = 0.0*mm;
+    auto SHCU_Side2_Ypos = 0.0*mm;
+    auto SHCU_Side2_Zpos = SHPB_Side1_Zpos;
+    auto SHCU_Side2_Pos = G4ThreeVector();
+
+    SHCU_Side2_Ypos = - SHSN_Side2_Ypos + SHSN_Side2_Y/2 + SHCU_Side2_Y/2;
+    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side2_Pos,       // its position
+                  SHCU_Side2_LV,        // its logical volume
+                  "SHCU_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHCU_Side2_Ypos = SHSN_Side2_Ypos - SHSN_Side2_Y/2 - SHCU_Side2_Y/2;
+    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side2_Pos,       // its position
+                  SHCU_Side2_LV,        // its logical volume
+                  "SHCU_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
+
+    //----------------------------------
+    // Side2 Plate
+    //----------------------------------
+    // Solid Volume
+    auto ENCL_Side2_X = kENCL_Side2_Xsize;
+    auto ENCL_Side2_Y = kENCL_Side2_Ysize;
+    auto ENCL_Side2_Z = kENCL_Side2_Zsize;
+
+    auto ENCL_Side2_S = new G4Box(
+                  "ENCL_Side2_S",       // its name
+                  ENCL_Side2_X/2,       // its X dimension 
+                  ENCL_Side2_Y/2,       // its Y dimension
+                  ENCL_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto ENCL_Side2_LV = new G4LogicalVolume(
+                  ENCL_Side2_S,         // its solid
+                  mAl6061,              // its material
+                  "ENCL_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto ENCL_Side2_Xpos = 0.0*mm;
+    auto ENCL_Side2_Ypos = 0.0*mm;
+    auto ENCL_Side2_Zpos = SHPB_Side1_Zpos;
+    auto ENCL_Side2_Pos = G4ThreeVector();
+
+    ENCL_Side2_Ypos = -SHCU_Side2_Ypos + SHCU_Side2_Y/2 + ENCL_Side2_Y/2;
+    ENCL_Side2_Pos = G4ThreeVector( ENCL_Side2_Xpos, ENCL_Side2_Ypos, ENCL_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_Side2_Pos,       // its position
+                  ENCL_Side2_LV,        // its logical volume
+                  "ENCL_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    ENCL_Side2_Ypos = SHCU_Side2_Ypos - SHCU_Side2_Y/2 - ENCL_Side2_Y/2;
+    ENCL_Side2_Pos = G4ThreeVector( ENCL_Side2_Xpos, ENCL_Side2_Ypos, ENCL_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_Side2_Pos,       // its position
+                  ENCL_Side2_LV,        // its logical volume
+                  "ENCL_Side2_PV",      // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+     //----------------------------------
+    // Top Plate Edge
+    //----------------------------------
+    // Solid Volume
+    auto ENCL_TopEdge_X = kENCL_TopEdge_Xsize;
+    auto ENCL_TopEdge_Y = kENCL_TopEdge_Ysize;
+    auto ENCL_TopEdge_Z = kENCL_TopEdge_Zsize;
+
+    G4VSolid* ENCL_TopEdge_S;
+    ENCL_TopEdge_S = new G4Box(
+                  "ENCL_TopEdge_S",     // its name
+                  ENCL_TopEdge_X/2,     // its X dimension 
+                  ENCL_TopEdge_Y/2,     // its Y dimension
+                  ENCL_TopEdge_Z/2);    // its Z dimension
+
+
+    // Hole
+    auto ENCL_TopEdge_Hole_X = kENCL_TopEdge_Hole_Xsize;
+    auto ENCL_TopEdge_Hole_Y = kENCL_TopEdge_Hole_Ysize;
+    auto ENCL_TopEdge_Hole_Z = kENCL_TopEdge_Hole_Zsize;
+
+    auto ENCL_TopEdge_Hole_S = new G4Box(
+                  "ENCL_TopEdge_Hole_S",     // its name
+                  ENCL_TopEdge_Hole_X/2,     // its X dimension
+                  ENCL_TopEdge_Hole_Y/2,     // its Y dimension
+                  ENCL_TopEdge_Hole_Z/2);    // its Z dimension
+
+    auto ENCL_TopEdge_Hole_pos = G4ThreeVector( 0., 0., 0. );
+    ENCL_TopEdge_S = new G4SubtractionSolid( 
+                  "ENCL_TopEdge_S",     // its name
+                  ENCL_TopEdge_S,       // starting solid
+                  ENCL_TopEdge_Hole_S,  // solid to be subtracted
+                  0,                    // its rotation
+                  ENCL_TopEdge_Hole_pos );   // its position
+
+    // Logical Volume
+    auto ENCL_TopEdge_LV = new G4LogicalVolume(
+                  ENCL_TopEdge_S,       // its solid
+                  mAl6061,              // its material
+                  "ENCL_TopEdge_LV");   // its name
+
+    auto ENCL_TopEdge_Xpos = 0.0*mm;
+    auto ENCL_TopEdge_Ypos = 0.0*mm;
+    auto ENCL_TopEdge_Zpos = ENCL_Side1_Zpos + ENCL_Side1_Z/2 - ENCL_TopEdge_Z/2;
+    auto ENCL_TopEdge_Pos = G4ThreeVector( ENCL_TopEdge_Xpos, ENCL_TopEdge_Ypos, ENCL_TopEdge_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ENCL_TopEdge_Pos,     // its position
+                  ENCL_TopEdge_LV,      // its logical volume
+                  "ENCL_TopEdge_PV",    // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+  
 
     //----------------------------------
     // Detector Column
@@ -1232,7 +1870,7 @@ namespace grape
     auto detColumn_offsetY = ( kScint_Ypitch * (kNumScint_Y-1) / 2 );
     auto detColumn_Xpos = 0.0*mm;
     auto detColumn_Ypos = 0.0*mm;
-    auto detColumn_Zpos = MIB_Zpos + MIB_Z/2 + detColumn_Z/2;
+    auto detColumn_Zpos = -kDet_Module_Zsize/2 - kMIB_Zoffset -kMIB_Zsize + detColumn_Z/2;
     auto detColumn_Pos = G4ThreeVector( detColumn_Xpos, detColumn_Ypos, detColumn_Zpos );
 
     // G4cout << G4endl;
@@ -1254,7 +1892,7 @@ namespace grape
                   detColumn_Pos,        // its position
                   detColumn_C_LV,       // its logical volume
                   "DetColumn_PV",       // its name
-                  module_LV,            // its mother  volume
+                  det_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -1268,7 +1906,7 @@ namespace grape
                   detColumn_Pos,        // its position
                   detColumn_C_LV,       // its logical volume
                   "DetColumn_PV",       // its name
-                  module_LV,            // its mother  volume
+                  det_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -1282,7 +1920,7 @@ namespace grape
                   detColumn_Pos,        // its position
                   detColumn_S_LV,       // its logical volume
                   "DetColumn_PV",       // its name
-                  module_LV,            // its mother  volume
+                  det_module_LV,            // its mother  volume
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
@@ -1858,6 +2496,7 @@ namespace grape
                   ENCL_Top_X/2,         // its X dimension
                   ENCL_Top_Y/2,         // its Y dimension
                   ENCL_Top_Z/2);        // its Z dimension
+
 
     // Holes
     auto ENCL_Top_Hole_X = kENCL_Top_Hole_Xsize;
@@ -2487,7 +3126,10 @@ namespace grape
      G4Color red_violet(0.7647, 0.0000, 0.5020, 1.0);
   
     world_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-    module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    det_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    daq_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    pwr_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    pyld_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );    
@@ -2498,15 +3140,15 @@ namespace grape
     detElement_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
-   auto check_VisAtt = new G4VisAttributes( violet );
-   SCINT_Case_LV ->   SetVisAttributes( check_VisAtt );
-   SCINT_Case_Top_LV->SetVisAttributes( check_VisAtt );
-   SCINT_Case_Bot_LV->SetVisAttributes( check_VisAtt );
+    auto check_VisAtt = new G4VisAttributes( violet );
+    SCINT_Case_LV ->   SetVisAttributes( check_VisAtt );
+    SCINT_Case_Top_LV->SetVisAttributes( check_VisAtt );
+    SCINT_Case_Bot_LV->SetVisAttributes( check_VisAtt );
 
 
-  auto wrap_VisAtt = new G4VisAttributes( orange );
-  wrap_VisAtt -> SetVisibility( true );
-  detWrap_LV -> SetVisAttributes( wrap_VisAtt );
+    auto wrap_VisAtt = new G4VisAttributes( orange );
+    wrap_VisAtt -> SetVisibility( true );
+    detWrap_LV -> SetVisAttributes( wrap_VisAtt );
 
     auto metal_VisAtt = new G4VisAttributes( G4Color::Gray() );
     metal_VisAtt -> SetVisibility( true );
@@ -2527,7 +3169,8 @@ namespace grape
     VCB_Side1_LV -> SetVisAttributes( pc_VisAtt );
 
     auto con_VisAtt = new G4VisAttributes( yellow );
-    APB_Con_LV -> SetVisAttributes( con_VisAtt );
+    APB_Con_Side1_LV -> SetVisAttributes( con_VisAtt );
+    APB_Con_Side2_LV -> SetVisAttributes( con_VisAtt );
     
     auto pmt_VisAtt = new G4VisAttributes( G4Color::White() );
     pmt_VisAtt -> SetVisibility( true );
@@ -2560,7 +3203,8 @@ namespace grape
      ORing_LV -> SetVisAttributes(calHouse_VisAtt);
      // calHouse_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
-    
+    auto Oring_VisAtt = new G4VisAttributes( G4Color::Black()  );
+    ORing_LV -> SetVisAttributes(Oring_VisAtt);
 
 
     //======================================================
@@ -2678,9 +3322,9 @@ namespace grape
 	G4cout << "           dZ: kDetColumn_Zsize = " << kDetColumn_Zsize << " mm" << G4endl;		
 	G4cout << "*********************************************************" << G4endl;
 	G4cout << "Module Dimensions: " << G4endl;
-	G4cout << "           dX: kModule_Xsize = " << kModule_Xsize << " mm" << G4endl;
-	G4cout << "           dY: kModule_Ysize = " << kModule_Ysize << " mm" << G4endl;
-	G4cout << "           dZ: kModule_Zsize = " << kModule_Zsize << " mm" << G4endl;		
+	G4cout << "           dX: kDet_Module_Xsize = " << kDet_Module_Xsize << " mm" << G4endl;
+	G4cout << "           dY: kDet_Module_Ysize = " << kDet_Module_Ysize << " mm" << G4endl;
+	G4cout << "           dZ: kDet_Module_Zsize = " << kDet_Module_Zsize << " mm" << G4endl;		
 	G4cout << "*********************************************************" << G4endl;
 	G4cout << "Enclose Side1 (Al) Dimensions: " << G4endl;
 	G4cout << "           dX: kENCL_Side1_Xsize = " << kENCL_Side1_Xsize << " mm" << G4endl;
@@ -2788,7 +3432,7 @@ namespace grape
     //======================================================
     // Print some information
     //======================================================
-    G4ThreeVector TopCenter = G4ThreeVector( 0., 0., (mod_Zpos + mod_Z/2) );
+    G4ThreeVector TopCenter = G4ThreeVector( 0., 0., (det_mod_Zpos + det_mod_Z/2) );
     // G4RotationMatrix TopCenter_rot = G4RotationMatrix( 0., fZenithAngle, 0. );
     // TopCenter.transform( TopCenter_rot );
 
@@ -2798,9 +3442,9 @@ namespace grape
 
     G4cout << G4endl;
     G4cout << "------ Instrument Dimensions: " << G4endl;
-    G4cout << "           X: " << mod_X/mm << " mm" << G4endl;
-    G4cout << "           Y: " << mod_Y/mm << " mm" << G4endl;
-    G4cout << "           Z: " << mod_Z/mm << " mm" << G4endl;
+    G4cout << "           X: " << det_mod_X/mm << " mm" << G4endl;
+    G4cout << "           Y: " << det_mod_Y/mm << " mm" << G4endl;
+    G4cout << "           Z: " << det_mod_Z/mm << " mm" << G4endl;
 
     G4cout << "------ Center of Top of Instrument: " << G4endl;
     G4cout << "           X: " << TopCenter.x()/mm << " mm" << G4endl;
@@ -2851,7 +3495,7 @@ namespace grape
 
       auto Xpos = 0.0*mm;
       auto Ypos = (kENCL_Side1_Zsize/2 - kScint_Zsize/2)*std::sin( fZenithAngle );
-      auto Zpos = kModule_Zsize/2*std::cos( fZenithAngle ) + kModule_Xsize/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
+      auto Zpos = kDet_Module_Zsize/2*std::cos( fZenithAngle ) + kDet_Module_Xsize/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
       auto Pos = G4ThreeVector( Xpos, Ypos, Zpos );
       auto RotMat = new G4RotationMatrix();
       RotMat -> setTheta( fZenithAngle );
@@ -2885,7 +3529,7 @@ namespace grape
 
       auto Xpos = 0.0*mm;
       auto Ypos = (kENCL_Side1_Zsize/2 - kScint_Zsize/2)*std::sin( fZenithAngle );
-      auto Zpos = kModule_Zsize/2*std::cos( fZenithAngle ) + kModule_Xsize/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
+      auto Zpos = kDet_Module_Zsize/2*std::cos( fZenithAngle ) + kDet_Module_Xsize/2*(std::cos( fAzimuthAngle ) + std::sin( fAzimuthAngle ))*std::sin( fZenithAngle );
       auto Pos = G4ThreeVector( Xpos, Ypos, Zpos );
       auto RotMat = new G4RotationMatrix();
       RotMat -> setTheta( fZenithAngle );
