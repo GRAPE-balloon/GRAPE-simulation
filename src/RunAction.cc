@@ -59,7 +59,7 @@ namespace grape
 
     // Default output file
     //
-    G4String fileName = "data/Test_ntuple.root";
+    G4String fileName = "../data/Test_ntuple.root";
     // Other supported output types:
     // G4String fileName = "data/Test_ntuple.csv";
     // G4String fileName = "data/Test_ntuple.hdf5";
