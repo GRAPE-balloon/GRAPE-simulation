@@ -131,20 +131,33 @@ namespace grape
           analysisManager->FillNtupleDColumn(col++, hit->GetPos().x());   // 2
           analysisManager->FillNtupleDColumn(col++, hit->GetPos().y());   // 3
           analysisManager->FillNtupleDColumn(col++, hit->GetPos().z());   // 4
-          analysisManager->FillNtupleDColumn(col++, hit->GetEdep()/keV);  // 5
-          analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetEdep()/keV)); // 6
-          analysisManager->FillNtupleDColumn(col++, hit->GetBirkEdep()/keV);  // 7
-          analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetBirkEdep()/keV)); // 8
-          analysisManager->FillNtupleDColumn(col++, hit->GetVisEdep()/keV);  // 9
-          analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetVisEdep()/keV)); // 10
-          analysisManager->FillNtupleDColumn(col++, hit->GetTime()/ns);   // 11
-          analysisManager->FillNtupleSColumn(col++, hit->GetType());      // 12
-          analysisManager->FillNtupleIColumn(col++, hit->GetDetType());      // 13
+          analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetEdep()/keV)); // 5
+          analysisManager->FillNtupleDColumn(col++, hit->GetTime()/ns);   // 6
+          analysisManager->FillNtupleSColumn(col++, hit->GetType());      // 7
+          analysisManager->FillNtupleIColumn(col++, hit->GetDetType());      // 8
          // G4cout << "DetType:  " << hit->GetDetType() << G4endl;
 
+          // // detailed output with 13 columns of information per hit
+          // analysisManager->FillNtupleIColumn(col++, hit->GetID());        // 1
+          // analysisManager->FillNtupleDColumn(col++, hit->GetPos().x());   // 2
+          // analysisManager->FillNtupleDColumn(col++, hit->GetPos().y());   // 3
+          // analysisManager->FillNtupleDColumn(col++, hit->GetPos().z());   // 4
+          // analysisManager->FillNtupleDColumn(col++, hit->GetEdep()/keV);  // 5
+          // analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetEdep()/keV)); // 6
+          // analysisManager->FillNtupleDColumn(col++, hit->GetBirkEdep()/keV);  // 7
+          // analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetBirkEdep()/keV)); // 8
+          // analysisManager->FillNtupleDColumn(col++, hit->GetVisEdep()/keV);  // 9
+          // analysisManager->FillNtupleDColumn(col++, BroadenEnergy(hit->GetType(),hit->GetVisEdep()/keV)); // 10
+          // analysisManager->FillNtupleDColumn(col++, hit->GetTime()/ns);   // 11
+          // analysisManager->FillNtupleSColumn(col++, hit->GetType());      // 12
+          // analysisManager->FillNtupleIColumn(col++, hit->GetDetType());      // 13
+         // G4cout << "DetType:  " << hit->GetDetType() << G4endl;
+
+          // total event energy
           totalE += hit->GetEdep()/keV;
         } else {
-          col += 13;
+          col += 8;
+          // col +=13;
         }
       }
 

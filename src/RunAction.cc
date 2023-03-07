@@ -79,6 +79,7 @@ namespace grape
       std::ostringstream os;
       os << i;
 
+      // reduced output with 8 columns per hit
       col_name = "D" + os.str() + "_ID";
       analysisManager->CreateNtupleIColumn( col_name );
 
@@ -91,22 +92,7 @@ namespace grape
       col_name = "D" + os.str() + "_PosZ";
       analysisManager->CreateNtupleDColumn( col_name );
 
-      col_name = "D" + os.str() + "_Energy"; // Energy deposited
-      analysisManager->CreateNtupleDColumn( col_name );
-
       col_name = "D" + os.str() + "_GEB"; // Gaussian Energy Broadening
-      analysisManager->CreateNtupleDColumn( col_name );
-
-      col_name = "D" + os.str() + "_BirkEnergy"; // Energy deposited with Birks
-      analysisManager->CreateNtupleDColumn( col_name );
-
-      col_name = "D" + os.str() + "_BirkGEB"; // Gaussian Energy Broadening
-      analysisManager->CreateNtupleDColumn( col_name );
-
-      col_name = "D" + os.str() + "_VisEnergy"; // Energy deposited with Birks
-      analysisManager->CreateNtupleDColumn( col_name );
-
-      col_name = "D" + os.str() + "_VisGEB"; // Gaussian Energy Broadening
       analysisManager->CreateNtupleDColumn( col_name );
 
       col_name = "D" + os.str() + "_Time";
@@ -117,6 +103,47 @@ namespace grape
       
       col_name = "D" + os.str() + "_DetType";
       analysisManager->CreateNtupleIColumn( col_name );
+
+
+      // // detailed output with 13 columns
+      // col_name = "D" + os.str() + "_ID";
+      // analysisManager->CreateNtupleIColumn( col_name );
+
+      // col_name = "D" + os.str() + "_PosX";
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_PosY";
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_PosZ";
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_Energy"; // Energy deposited
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_GEB"; // Gaussian Energy Broadening
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_BirkEnergy"; // Energy deposited with Birks
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_BirkGEB"; // Gaussian Energy Broadening
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_VisEnergy"; // Energy deposited with Birks
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_VisGEB"; // Gaussian Energy Broadening
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_Time";
+      // analysisManager->CreateNtupleDColumn( col_name );
+
+      // col_name = "D" + os.str() + "_Type";
+      // analysisManager->CreateNtupleSColumn( col_name );
+      
+      // col_name = "D" + os.str() + "_DetType";
+      // analysisManager->CreateNtupleIColumn( col_name );
 
       // col_name = "D" + os.str() + "_PhysType";
       // analysisManager->CreateNtupleSColumn( col_name );

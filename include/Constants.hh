@@ -28,7 +28,7 @@ namespace grape
   /// Constants to define geometry.
   ///
   //****************************************************************************
-  constexpr auto kNumKeep = 5;
+  constexpr auto kNumKeep = 5; // keep a maximum of 5 hits per event
   
   constexpr auto kDim = 245;
   constexpr auto kNumC = 145;
