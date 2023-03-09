@@ -1875,7 +1875,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
     // G4cout << G4endl;
     // G4cout << "--> Column Positions:" << G4endl;
-    auto copyNum = 0;
+    auto copyNum = 1; // col copynumbers start at 1 to match EM columnIDs
     for (auto col = 0; col<kNumScint_Y; col++) {
       for (auto row = 0; row<kNumScint_X; row++) {
         detColumn_Xpos =  ( row * kScint_Xpitch ) - detColumn_offsetX;
@@ -1905,6 +1905,20 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                   0,                    // its rotation
                   detColumn_Pos,        // its position
                   detColumn_C_LV,       // its logical volume
+                  "DetColumn_PV",       // its name
+                  det_module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  copyNum,              // copy number
+                  fCheckOverlaps);      // checking overlaps 
+          copyNum++;
+
+        }
+
+        else if ( (col == 3) && (row == 3) ) { // Tagged Source Column
+          new G4PVPlacement(
+                  0,                    // its rotation
+                  detColumn_Pos,        // its position
+                  detColumn_Cal_LV,       // its logical volume
                   "DetColumn_PV",       // its name
                   det_module_LV,            // its mother  volume
                   false,                // no boolean operation
@@ -2598,7 +2612,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
     // G4cout << G4endl;
     // G4cout << "--> Element Positions:" << G4endl;
-    copyNum = 0;
+    copyNum = 5; // detector IDs within the column changed to match the EM
     for (auto ele = 0; ele<kNumScint_Z; ele++) {
       detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
@@ -2606,7 +2620,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
       // G4cout << "----> Copy Number: " << copyNum;
       // G4cout << " (" << detElement_Xpos << ", " << detElement_Ypos << ", " << detElement_Zpos << ")" << G4endl;
-
+      // Calorimeter column
       new G4PVPlacement(
                   0,                    // its rotation
                   detElement_Pos,       // its position
@@ -2616,10 +2630,10 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
-      copyNum++;
+      copyNum--;
     }
 
-    copyNum = 0;
+    copyNum = 5;
     for (auto ele = 0; ele<kNumScint_Z; ele++) {
       detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
@@ -2627,7 +2641,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
       // G4cout << "----> Copy Number: " << copyNum;
       // G4cout << " (" << detElement_Xpos << ", " << detElement_Ypos << ", " << detElement_Zpos << ")" << G4endl;
-
+      // Mixed Columns (4 p-Terphenyls, 1 GAGG at bottom)
       if (ele < kNumScint_Z-1) {
         new G4PVPlacement(
                   0,                    // its rotation
@@ -2638,7 +2652,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
-        copyNum++;
+        copyNum--;
       }
       else {
         new G4PVPlacement(
@@ -2650,11 +2664,11 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                   false,                // no boolean operation
                   copyNum,              // copy number
                   fCheckOverlaps);      // checking overlaps 
-        copyNum++;
+        copyNum--;
       }
     }
 
-     copyNum = 0;
+     copyNum = 5;
      for (auto ele = 0; ele<kNumScint_Z; ele++) {
        detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
@@ -2662,8 +2676,8 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
        // G4cout << "----> Copy Number: " << copyNum;
        // G4cout << " (" << detElement_Xpos << ", " << detElement_Ypos << ", " << detElement_Zpos << ")" << G4endl;
-
-       if (ele == 3) {
+      // Tagged source column
+       if ((ele == 3)  || (ele == 4)) {
          new G4PVPlacement(
                    0,                    // its rotation
                    detElement_Pos,       // its position
@@ -2673,7 +2687,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                    false,                // no boolean operation
                    copyNum,              // copy number
                    fCheckOverlaps);      // checking overlaps 
-         copyNum++;
+         copyNum--;
        }
        else if (ele < kNumScint_Z-1) {
          new G4PVPlacement(
@@ -2685,7 +2699,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                    false,                // no boolean operation
                    copyNum,              // copy number
                    fCheckOverlaps);      // checking overlaps 
-         copyNum++;
+         copyNum--;
        }
        else {
          new G4PVPlacement(
@@ -2697,7 +2711,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                    false,                // no boolean operation
                    copyNum,              // copy number
                    fCheckOverlaps);      // checking overlaps 
-         copyNum++;
+         copyNum--;
        }
      }
 
