@@ -2677,7 +2677,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
        // G4cout << "----> Copy Number: " << copyNum;
        // G4cout << " (" << detElement_Xpos << ", " << detElement_Ypos << ", " << detElement_Zpos << ")" << G4endl;
       // Tagged source column
-       if ((ele == 3)  || (ele == 4)) {
+       if ((ele == 2)  || (ele == 3)) {
          new G4PVPlacement(
                    0,                    // its rotation
                    detElement_Pos,       // its position
@@ -2689,7 +2689,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                    fCheckOverlaps);      // checking overlaps 
          copyNum--;
        }
-       else if (ele < kNumScint_Z-1) {
+       else if ((ele == 4)  || (ele == 5)) {
          new G4PVPlacement(
                    0,                    // its rotation
                    detElement_Pos,       // its position
@@ -3147,9 +3147,9 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     detColumn_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );    
-    // SCINT_Case_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-    // SCINT_Case_Top_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-    // SCINT_Case_Bot_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SCINT_Case_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SCINT_Case_Top_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SCINT_Case_Bot_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
@@ -3161,7 +3161,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
 
 
     auto wrap_VisAtt = new G4VisAttributes( orange );
-    wrap_VisAtt -> SetVisibility( true );
+    wrap_VisAtt -> SetVisibility( false );
     detWrap_LV -> SetVisAttributes( wrap_VisAtt );
 
     auto metal_VisAtt = new G4VisAttributes( G4Color::Gray() );
@@ -3190,7 +3190,6 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     pmt_VisAtt -> SetVisibility( true );
     SiPM_LV -> SetVisAttributes( pmt_VisAtt );
  
-  
 
     auto scintC_VisAtt = new G4VisAttributes( blue );
     scintC_VisAtt -> SetVisibility(true);
@@ -3212,9 +3211,8 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
      // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
      auto calHouse_VisAtt = new G4VisAttributes( G4Color::Black()  );
-     calHouse_VisAtt -> SetVisibility(true);
+     calHouse_VisAtt -> SetVisibility(false);
      calHouse_LV -> SetVisAttributes(calHouse_VisAtt);
-     ORing_LV -> SetVisAttributes(calHouse_VisAtt);
      // calHouse_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
     auto Oring_VisAtt = new G4VisAttributes( G4Color::Black()  );
