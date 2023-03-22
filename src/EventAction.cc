@@ -205,7 +205,8 @@ namespace grape
     
     else if ( type == "GAGG" ) { 
       // auto sigma = ( 0.033306 * energy ) + 4.218475; // fit to GRAPE calibration data
-      auto sigma = 1.42 + 0.90 * sqrt( energy ) ;
+      // auto sigma = 1.42 + 0.90 * sqrt( energy ) ;
+      auto sigma = (0.8319 * sqrt( energy )) - 0.1915;
       energy = G4RandGauss::shoot( energy, sigma );
     }
 

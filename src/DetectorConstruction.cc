@@ -2689,7 +2689,7 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
                    fCheckOverlaps);      // checking overlaps 
          copyNum--;
        }
-       else if ((ele == 4)  || (ele == 5)) {
+       else if (ele < kNumScint_Z-1) {
          new G4PVPlacement(
                    0,                    // its rotation
                    detElement_Pos,       // its position
@@ -3128,17 +3128,26 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     //======================================================
      G4Color red(0.9843, 0.0000, 0.0275, 1.0);
      G4Color red_orange(0.9843, 0.3098, 0.0275, 1.0);
-     G4Color orange(0.9843, 0.5294, 0.0314, 1.0);
+    //  G4Color orange(0.9843, 0.5294, 0.0314, 1.0);
      G4Color yellow_orange(0.9922, 0.7647, 0.0353, 1.0);
-     G4Color yellow(0.9922, 1.0000, 0.0431, 1.0);
+    //  G4Color yellow(0.9922, 1.0000, 0.0431, 1.0);
      G4Color yellow_green(0.3412, 0.7725, 0.0235, 1.0);
      G4Color green(0.0745, 0.5412, 0.0118, 1.0);
-     G4Color blue_green(0.0745, 0.7451, 0.7059, 1.0);
-     G4Color blue(0.0745, 0.3098, 0.7647, 1.0);
+    //  G4Color blue_green(0.0745, 0.7451, 0.7059, 1.0);
+    //  G4Color blue(0.0745, 0.3098, 0.7647, 1.0);
      G4Color blue_violet(0.3608, 0.0000, 0.5020, 1.0);
      G4Color violet(0.5020, 0.0000, 0.5020, 1.0);
      G4Color red_violet(0.7647, 0.0000, 0.5020, 1.0);
-  
+
+    // Accessible color pallette    
+     G4Color orange(0.90, 0.60, 0.0, 1.0);
+     G4Color vermillion(0.80, 0.40, 0.0, 1.0); // appears as a darker shade of orang
+     G4Color blue(0.0, 0.45, 0.70, 1.0);
+     G4Color blue_green(0.0, 0.60, 0.50, 1.0); // avoid with blue if possible 
+     G4Color red_purple(0.80, 0.60, 0.70, 1.0);
+     G4Color skyblue(0.35, 0.70, 0.90, 1.0);
+     G4Color yellow(0.95, 0.90, 0.25, 1.0);
+
     world_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     det_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     daq_module_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
@@ -3153,14 +3162,55 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     detElement_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHCU_Side1_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHAL_Side1_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHPB_Side1_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHSN_Side1_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHCU_Side2_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHAL_Side2_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHPB_Side2_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    SHSN_Side2_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+
+
+    auto scintC_VisAtt = new G4VisAttributes( orange );
+    scintC_VisAtt -> SetVisibility(true);
+    scintC_LV -> SetVisAttributes(scintC_VisAtt);
+    // scintC_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+
+    auto scintS_VisAtt = new G4VisAttributes( blue );
+    scintS_VisAtt -> SetVisibility(true);
+    scintS_LV -> SetVisAttributes(scintS_VisAtt);
+    // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+
+    auto opad_VisAtt = new G4VisAttributes( G4Color::White() );
+    opad_VisAtt -> SetVisibility( true );
+    OPad_LV -> SetVisAttributes( opad_VisAtt );
+
+    auto pmt_VisAtt = new G4VisAttributes( blue_green );
+    pmt_VisAtt -> SetVisibility( true );
+    SiPM_PCB_LV -> SetVisAttributes( pmt_VisAtt );
+
+    auto SiPM_VisAtt = new G4VisAttributes( G4Color::Black()  );
+    SiPM_VisAtt -> SetVisibility( true );
+    SiPM_LV -> SetVisAttributes( SiPM_VisAtt );
+
+    auto calHouse_VisAtt = new G4VisAttributes( skyblue );
+    calHouse_VisAtt -> SetVisibility(true);
+    calHouse_LV -> SetVisAttributes(calHouse_VisAtt);
+
+    auto cal_VisAtt = new G4VisAttributes( yellow_orange  );
+    cal_VisAtt -> SetVisibility(true);
+    cal_LV -> SetVisAttributes(cal_VisAtt);  
+
 
     auto check_VisAtt = new G4VisAttributes( violet );
+    check_VisAtt -> SetVisibility( false );
     SCINT_Case_LV ->   SetVisAttributes( check_VisAtt );
     SCINT_Case_Top_LV->SetVisAttributes( check_VisAtt );
     SCINT_Case_Bot_LV->SetVisAttributes( check_VisAtt );
 
 
-    auto wrap_VisAtt = new G4VisAttributes( orange );
+    auto wrap_VisAtt = new G4VisAttributes( G4Color::White() );
     wrap_VisAtt -> SetVisibility( false );
     detWrap_LV -> SetVisAttributes( wrap_VisAtt );
 
@@ -3173,12 +3223,12 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     ENCL_TopEdge_LV -> SetVisAttributes( metal_VisAtt );
     MIBP_LV -> SetVisAttributes( metal_VisAtt );
     MIBP_Edge_LV -> SetVisAttributes( metal_VisAtt );
+    MIBP_Mount_LV -> SetVisAttributes( metal_VisAtt );
 
     auto pc_VisAtt = new G4VisAttributes( green );
     pc_VisAtt -> SetVisibility( true );
     APB_LV -> SetVisAttributes( pc_VisAtt );
     MIB_LV -> SetVisAttributes( pc_VisAtt );
-    SiPM_PCB_LV -> SetVisAttributes( pc_VisAtt );
     VCB_Side2_LV -> SetVisAttributes( pc_VisAtt );
     VCB_Side1_LV -> SetVisAttributes( pc_VisAtt );
 
@@ -3186,37 +3236,15 @@ for (auto row = 0; row<APB_Xnum/2; row++) {
     APB_Con_Side1_LV -> SetVisAttributes( con_VisAtt );
     APB_Con_Side2_LV -> SetVisAttributes( con_VisAtt );
     
-    auto pmt_VisAtt = new G4VisAttributes( G4Color::White() );
-    pmt_VisAtt -> SetVisibility( true );
-    SiPM_LV -> SetVisAttributes( pmt_VisAtt );
+
+    
+
+
  
-
-    auto scintC_VisAtt = new G4VisAttributes( blue );
-    scintC_VisAtt -> SetVisibility(true);
-    scintC_LV -> SetVisAttributes(scintC_VisAtt);
-    // scintC_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-
-    auto scintS_VisAtt = new G4VisAttributes( red );
-    scintS_VisAtt -> SetVisibility(true);
-    scintS_LV -> SetVisAttributes(scintS_VisAtt);
-    // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-
-     auto opad_VisAtt = new G4VisAttributes( blue_green );
-     opad_VisAtt -> SetVisibility( true );
-     OPad_LV -> SetVisAttributes( opad_VisAtt );
-
-     auto cal_VisAtt = new G4VisAttributes( yellow_orange  );
-     cal_VisAtt -> SetVisibility(true);
-     cal_LV -> SetVisAttributes(cal_VisAtt);
-     // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-
-     auto calHouse_VisAtt = new G4VisAttributes( G4Color::Black()  );
-     calHouse_VisAtt -> SetVisibility(false);
-     calHouse_LV -> SetVisAttributes(calHouse_VisAtt);
-     // calHouse_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-
     auto Oring_VisAtt = new G4VisAttributes( G4Color::Black()  );
+    Oring_VisAtt -> SetVisibility( true );
     ORing_LV -> SetVisAttributes(Oring_VisAtt);
+    // SiPM_LV -> SetVisAttributes( Oring_VisAtt );
 
 
     //======================================================
